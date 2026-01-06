@@ -2,7 +2,6 @@ import { Button, Card, Input, Row } from 'antd'
 import { RefObject } from 'react'
 import { connect } from 'react-redux'
 import { RouteComponentProps } from 'react-router'
-import ProjectSelector from '../../components/ProjectSelector'
 import { IMobileComponent } from '../../models/ContainerProps'
 import ProjectDefinition from '../../models/ProjectDefinition'
 import { localize } from '../../utils/Language'
@@ -38,7 +37,7 @@ class ProjectDetailsEdit extends ApiComponent<
     }
 
     goBackToApps() {
-        this.props.history.push('/apps')
+        this.props.history.push('/projects')
     }
 
     render() {
@@ -67,7 +66,7 @@ class ProjectDetailsEdit extends ApiComponent<
                         <p>
                             {localize(
                                 'projects.edit_project_hint',
-                                'You can set the name, description and the parent of this project.'
+                                'Set a name and description for your project.'
                             )}
                         </p>
                         <div style={{ height: 20 }} />
@@ -105,32 +104,6 @@ class ProjectDetailsEdit extends ApiComponent<
                                 }}
                             />
 
-                            <div
-                                style={{
-                                    marginTop: 32,
-                                    marginBottom: 5,
-                                }}
-                            >
-                                {localize(
-                                    'apps.parent_project',
-                                    'Parent project'
-                                )}
-                            </div>
-                            <ProjectSelector
-                                allProjects={self.state.allProjects}
-                                selectedProjectId={
-                                    selectedProject.parentProjectId || ''
-                                }
-                                onChange={(value: string) => {
-                                    const newData =
-                                        Utils.copyObject(selectedProject)
-                                    newData.parentProjectId = value.trim()
-                                    self.setState({
-                                        selectedProject: newData,
-                                    })
-                                }}
-                                excludeProjectId={selectedProject.id}
-                            />
                             <div
                                 style={{
                                     marginTop: 32,

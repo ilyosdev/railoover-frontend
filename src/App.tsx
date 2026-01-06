@@ -4,6 +4,7 @@ import { useState } from 'react'
 import { Provider } from 'react-redux'
 import { HashRouter, Route, Switch } from 'react-router-dom'
 import CenteredSpinner from './containers/global/CenteredSpinner'
+import GitHubCallback from './containers/GitHubCallback'
 import Login from './containers/Login'
 import PageRoot from './containers/PageRoot'
 import CapRoverThemeContext from './contexts/CapRoverThemeContext'
@@ -26,6 +27,14 @@ const store = configureStore({
 })
 
 const MainComponent = () => {
+    if (window.location.pathname === '/github/callback') {
+        return (
+            <AntdApp className="full-screen">
+                <GitHubCallback />
+            </AntdApp>
+        )
+    }
+
     return (
         <AntdApp className="full-screen">
             <HashRouter>

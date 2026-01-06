@@ -110,7 +110,12 @@ class AppDetails extends ApiComponent<
     }
 
     goBackToApps() {
-        this.props.history.push('/apps')
+        const projectId = this.props.match.params.projectId
+        if (projectId) {
+            this.props.history.push(`/projects/${projectId}`)
+        } else {
+            this.props.history.push('/apps')
+        }
     }
 
     onUpdateConfigAndSave() {
@@ -712,7 +717,10 @@ class AppDetails extends ApiComponent<
                     index++
                 ) {
                     const element = getAppsResp.appDefinitions[index]
-                    if (element.appName === self.props.match.params.appName) {
+                    const targetAppName =
+                        self.props.match.params.serviceName ||
+                        self.props.match.params.appName
+                    if (element.appName === targetAppName) {
                         self.setState({
                             isLoading: false,
                             apiData: {

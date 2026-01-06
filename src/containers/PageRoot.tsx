@@ -35,6 +35,8 @@ import Maintenance from './maintenance/Maintenance'
 import Monitoring from './monitoring/Monitoring'
 import Cluster from './nodes/Cluster'
 import Settings from './settings/Settings'
+import ProjectDashboard from './projects/ProjectDashboard'
+import Projects from './projects/Projects'
 
 const { Header, Content } = Layout
 
@@ -292,6 +294,25 @@ class PageRoot extends ApiComponent<
                                 <Route
                                     path="/dashboard/"
                                     component={Dashboard}
+                                />
+
+                                <Route
+                                    path="/projects/:projectId/services/:serviceName"
+                                    render={(props) => (
+                                        <AppDetails
+                                            {...props}
+                                            mainContainer={self.mainContainer}
+                                        />
+                                    )}
+                                />
+                                <Route
+                                    path="/projects/:projectId"
+                                    component={ProjectDashboard}
+                                />
+                                <Route
+                                    path="/projects"
+                                    exact
+                                    component={Projects}
                                 />
 
                                 <Route

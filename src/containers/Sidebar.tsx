@@ -5,6 +5,7 @@ import {
     DashboardOutlined,
     LaptopOutlined,
     LogoutOutlined,
+    ProjectOutlined,
     SettingOutlined,
 } from '@ant-design/icons'
 import { Layout, Menu, MenuProps } from 'antd'
@@ -42,6 +43,11 @@ const Sidebar: React.FC<SidebarProps> = ({
             key: 'dashboard',
             label: localize('menu_item.dashboard', 'Dashboard'),
             icon: <LaptopOutlined />,
+        },
+        {
+            key: 'projects',
+            label: localize('menu_item.projects', 'Projects'),
+            icon: <ProjectOutlined />,
         },
         {
             key: 'apps',
