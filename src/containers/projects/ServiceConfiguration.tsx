@@ -24,6 +24,8 @@ interface ServiceConfigurationProps {
 interface ServiceConfigurationState {
     githubRepo: string
     githubBranch: string
+    githubUsername: string
+    githubPassword: string
     serviceName: string
     containerPort: number
     envVars: IAppEnvVar[]
@@ -43,6 +45,8 @@ export default class ServiceConfiguration extends ApiComponent<
         this.state = {
             githubRepo: '',
             githubBranch: 'main',
+            githubUsername: '',
+            githubPassword: '',
             serviceName: '',
             containerPort: defaultPort,
             envVars: [],
@@ -130,9 +134,40 @@ export default class ServiceConfiguration extends ApiComponent<
         return true
     }
 
+    parseGitHubRepo(input: string): { repo: string; user: string } {
+        let repo = input.trim()
+
+        if (repo.startsWith('https://github.com/')) {
+            repo = repo.replace('https://github.com/', '')
+        } else if (repo.startsWith('github.com/')) {
+            repo = repo.replace('github.com/', '')
+        }
+
+        repo = repo.replace(/\.git$/, '')
+        repo = repo.replace(/\/$/, '')
+
+        const parts = repo.split('/')
+        if (parts.length >= 2) {
+            return {
+                user: parts[0],
+                repo: `${parts[0]}/${parts[1]}`,
+            }
+        }
+
+        return { user: '', repo: repo }
+    }
+
     createService() {
         const self = this
-        const { serviceName, containerPort, envVars } = self.state
+        const {
+            serviceName,
+            containerPort,
+            envVars,
+            githubRepo,
+            githubBranch,
+            githubUsername,
+            githubPassword,
+        } = self.state
 
         if (!self.validateForm()) {
             return
@@ -143,6 +178,10 @@ export default class ServiceConfiguration extends ApiComponent<
         const filteredEnvVars = envVars.filter(
             (env) => env.key.trim() !== '' && env.value.trim() !== ''
         )
+
+        const parsedRepo = self.parseGitHubRepo(githubRepo)
+        const hasGitCredentials =
+            githubUsername.trim() !== '' && githubPassword.trim() !== ''
 
         let appDef: any = null
 
@@ -160,7 +199,7 @@ export default class ServiceConfiguration extends ApiComponent<
             })
             .then(function (data) {
                 const app = data.appDefinitions.find(
-                    (a) => a.appName === serviceName
+                    (a: any) => a.appName === serviceName
                 )
                 if (!app) {
                     throw new Error('App not found after creation')
@@ -170,16 +209,51 @@ export default class ServiceConfiguration extends ApiComponent<
                 appDef.instanceCount = 1
                 appDef.containerHttpPort = containerPort
                 appDef.notExposeAsWebApp = self.props.serviceType === 'worker'
+                appDef.tags = [{ tagName: self.props.serviceType }]
+
+                if (hasGitCredentials && parsedRepo.repo) {
+                    appDef.appPushWebhook = {
+                        repoInfo: {
+                            repo: parsedRepo.repo,
+                            branch: githubBranch || 'main',
+                            user: githubUsername.trim(),
+                            password: githubPassword.trim(),
+                        },
+                        tokenVersion: '',
+                        pushWebhookToken: '',
+                    }
+                }
 
                 return self.apiManager.updateConfigAndSave(serviceName, appDef)
             })
             .then(function () {
-                message.success(
-                    localize(
-                        'projects.service_created',
-                        'Service created successfully!'
-                    )
+                if (!hasGitCredentials) {
+                    return null
+                }
+                return self.apiManager.getAllApps()
+            })
+            .then(function (data) {
+                if (!data || !hasGitCredentials) {
+                    return null
+                }
+                const app = data.appDefinitions.find(
+                    (a: any) => a.appName === serviceName
                 )
+                if (
+                    app &&
+                    app.appPushWebhook &&
+                    app.appPushWebhook.pushWebhookToken
+                ) {
+                    const webhookPath = `/user/apps/webhooks/triggerbuild?namespace=captain&token=${app.appPushWebhook.pushWebhookToken}`
+                    return self.apiManager.forceBuild(webhookPath)
+                }
+                return null
+            })
+            .then(function () {
+                const msg = hasGitCredentials
+                    ? 'Service created and deployment started!'
+                    : 'Service created! Configure deployment in the service settings.'
+                message.success(localize('projects.service_created', msg))
                 self.props.onSuccess()
             })
             .catch(Toaster.createCatcher())
@@ -351,6 +425,58 @@ export default class ServiceConfiguration extends ApiComponent<
                                 self.setState({ githubBranch: e.target.value })
                             }
                         />
+                    </Col>
+
+                    <Col span={12}>
+                        <div style={{ marginBottom: 8 }}>
+                            <strong>
+                                {localize(
+                                    'projects.github_username',
+                                    'GitHub Username'
+                                )}
+                            </strong>
+                        </div>
+                        <Input
+                            placeholder="your-username"
+                            value={self.state.githubUsername}
+                            onChange={(e) =>
+                                self.setState({
+                                    githubUsername: e.target.value,
+                                })
+                            }
+                        />
+                    </Col>
+
+                    <Col span={12}>
+                        <div style={{ marginBottom: 8 }}>
+                            <strong>
+                                {localize(
+                                    'projects.github_password',
+                                    'GitHub Token/Password'
+                                )}
+                            </strong>
+                        </div>
+                        <Input.Password
+                            placeholder="ghp_xxxx or password"
+                            value={self.state.githubPassword}
+                            onChange={(e) =>
+                                self.setState({
+                                    githubPassword: e.target.value,
+                                })
+                            }
+                        />
+                        <div
+                            style={{
+                                marginTop: 4,
+                                fontSize: 12,
+                                color: '#888',
+                            }}
+                        >
+                            {localize(
+                                'projects.github_token_help',
+                                'Use a GitHub Personal Access Token for private repos'
+                            )}
+                        </div>
                     </Col>
 
                     {serviceType !== 'worker' && (

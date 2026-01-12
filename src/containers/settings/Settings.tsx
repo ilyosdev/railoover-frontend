@@ -7,8 +7,8 @@ import DarkModeSwitch from '../global/DarkModeSwitch'
 import LanguageSelector from '../global/LanguageSelector'
 import ChangePass from './ChangePass'
 import NginxConfig from './NginxConfig'
-import ProFeatures from './ProFeatures'
 import ThemeSettings from './ThemeSettings'
+import '../../styles/settings.css'
 
 class Settings extends Component<
     {
@@ -42,19 +42,12 @@ class Settings extends Component<
         }
 
         return (
-            <div>
+            <div className="settings-container">
                 <Row justify="center" gutter={20}>
-                    <Col
-                        style={{ marginTop: 40, marginBottom: 80 }}
-                        lg={{ span: 10 }}
-                        xs={{ span: 23 }}
-                    >
-                        <ProFeatures isMobile={this.props.isMobile} />
-                    </Col>{' '}
                     {createMobileOnlyComponents()}
                     <Col
                         style={{ marginTop: 40, marginBottom: 80 }}
-                        lg={{ span: 8 }}
+                        lg={{ span: 10 }}
                         xs={{ span: 23 }}
                     >
                         <Card

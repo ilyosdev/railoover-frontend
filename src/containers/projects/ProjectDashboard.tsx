@@ -8,10 +8,63 @@ import CenteredSpinner from '../global/CenteredSpinner'
 import ErrorRetry from '../global/ErrorRetry'
 import DeploymentHistory from './DeploymentHistory'
 import ProjectEnvironment from './ProjectEnvironment'
+import ProjectSettings from './ProjectSettings'
 import ServicesOverview from './ServicesOverview'
-import ServiceConnectionsVisualization from './ServiceConnections'
 import ServiceDetailDrawer from './ServiceDetailDrawer'
+import DatabaseServiceDrawer from './DatabaseServiceDrawer'
+import WorkerServiceDrawer from './WorkerServiceDrawer'
+import ProjectCollaborators from './ProjectCollaborators'
 import '../../styles/project-dashboard.css'
+
+type ServiceType = 'database' | 'web' | 'worker'
+
+function getDeployedImageName(service: IAppDef): string {
+    const deployedVersion = service.deployedVersion || 0
+    const versionInfo = service.versions?.find(
+        (v) => v.version === deployedVersion
+    )
+    return versionInfo?.deployedImageName || ''
+}
+
+function getServiceType(service: IAppDef): ServiceType {
+    const tags = service.tags || []
+    const appName = (service.appName || '').toLowerCase()
+    const imageName = getDeployedImageName(service).toLowerCase()
+
+    const dbKeywords = [
+        'postgres',
+        'mysql',
+        'redis',
+        'mongodb',
+        'mongo',
+        'mariadb',
+    ]
+    const workerKeywords = ['worker', 'cron', 'job', 'queue', 'consumer']
+
+    if (
+        tags.some((t) =>
+            ['database', ...dbKeywords].includes(t.tagName?.toLowerCase())
+        )
+    ) {
+        return 'database'
+    }
+
+    if (
+        dbKeywords.some((kw) => appName.includes(kw) || imageName.includes(kw))
+    ) {
+        return 'database'
+    }
+
+    if (tags.some((t) => workerKeywords.includes(t.tagName?.toLowerCase()))) {
+        return 'worker'
+    }
+
+    if (workerKeywords.some((kw) => appName.includes(kw))) {
+        return 'worker'
+    }
+
+    return 'web'
+}
 
 interface ProjectOverviewResponse {
     project: ProjectDefinition
@@ -102,26 +155,24 @@ export default class ProjectDashboard extends ApiComponent<
         const { project, services } = apiData
         const projectId = self.props.match.params.projectId
 
+        const searchParams = new URLSearchParams(self.props.location.search)
+        const activeTab = searchParams.get('tab') || 'overview'
+
         return (
-            <div
-                className="slow-fadein-fast"
-                style={{
-                    padding: '0 20px',
-                    margin: '0 auto 50px',
-                }}
-            >
-                <div style={{ marginBottom: 24 }}>
-                    <h1 style={{ marginBottom: 8, fontSize: 28 }}>
-                        {project.name}
-                    </h1>
-                    {project.description && (
-                        <p style={{ color: '#888', fontSize: 14 }}>
-                            {project.description}
-                        </p>
-                    )}
+            <div className="slow-fadein-fast project-dashboard-container">
+                <div className="project-header">
+                    <h1>{project.name}</h1>
+                    {project.description && <p>{project.description}</p>}
                 </div>
 
-                <Tabs defaultActiveKey="overview">
+                <Tabs
+                    activeKey={activeTab}
+                    onChange={(key) => {
+                        self.props.history.push(
+                            `/projects/${projectId}?tab=${key}`
+                        )
+                    }}
+                >
                     <Tabs.TabPane tab="Overview" key="overview">
                         <ServicesOverview
                             services={services}
@@ -131,19 +182,6 @@ export default class ProjectDashboard extends ApiComponent<
                                 self.handleServiceClick(service)
                             }
                         />
-                        {services.length > 1 && (
-                            <ServiceConnectionsVisualization
-                                services={services}
-                                onServiceClick={(serviceName) => {
-                                    const service = services.find(
-                                        (s) => s.appName === serviceName
-                                    )
-                                    if (service) {
-                                        self.handleServiceClick(service)
-                                    }
-                                }}
-                            />
-                        )}
                     </Tabs.TabPane>
 
                     <Tabs.TabPane tab="Environment" key="environment">
@@ -161,21 +199,67 @@ export default class ProjectDashboard extends ApiComponent<
                     </Tabs.TabPane>
 
                     <Tabs.TabPane tab="Settings" key="settings">
-                        <div>Project settings (coming soon)</div>
+                        <ProjectSettings
+                            projectId={projectId}
+                            projectName={project.name}
+                            projectDescription={project.description}
+                            apiManager={self.apiManager}
+                            onProjectDeleted={() => {
+                                self.props.history.push('/projects')
+                            }}
+                            onProjectUpdated={() => self.reFetchData()}
+                        />
+                    </Tabs.TabPane>
+
+                    <Tabs.TabPane tab="Collaborators" key="collaborators">
+                        <ProjectCollaborators
+                            projectId={projectId}
+                            apiManager={self.apiManager}
+                        />
                     </Tabs.TabPane>
                 </Tabs>
 
-                <ServiceDetailDrawer
-                    service={self.state.selectedService}
-                    visible={self.state.drawerVisible}
-                    onClose={() => self.handleDrawerClose()}
-                    apiManager={self.apiManager}
-                    projectId={projectId}
-                    onServiceUpdated={() => self.reFetchData()}
-                    allServices={services}
-                    rootDomain={apiData.rootDomain || ''}
-                    captainSubDomain={apiData.captainSubDomain || 'captain'}
-                />
+                {self.state.selectedService &&
+                    getServiceType(self.state.selectedService) ===
+                        'database' && (
+                        <DatabaseServiceDrawer
+                            service={self.state.selectedService}
+                            visible={self.state.drawerVisible}
+                            onClose={() => self.handleDrawerClose()}
+                            apiManager={self.apiManager}
+                            projectId={projectId}
+                            onServiceUpdated={() => self.reFetchData()}
+                            rootDomain={apiData.rootDomain || ''}
+                        />
+                    )}
+
+                {self.state.selectedService &&
+                    getServiceType(self.state.selectedService) === 'worker' && (
+                        <WorkerServiceDrawer
+                            service={self.state.selectedService}
+                            visible={self.state.drawerVisible}
+                            onClose={() => self.handleDrawerClose()}
+                            apiManager={self.apiManager}
+                            projectId={projectId}
+                            onServiceUpdated={() => self.reFetchData()}
+                            allServices={services}
+                        />
+                    )}
+
+                {(!self.state.selectedService ||
+                    getServiceType(self.state.selectedService) === 'web') && (
+                    <ServiceDetailDrawer
+                        service={self.state.selectedService}
+                        visible={self.state.drawerVisible}
+                        onClose={() => self.handleDrawerClose()}
+                        apiManager={self.apiManager}
+                        projectId={projectId}
+                        onServiceUpdated={() => self.reFetchData()}
+                        allServices={services}
+                        rootDomain={apiData.rootDomain || ''}
+                        captainSubDomain={apiData.captainSubDomain || 'captain'}
+                    />
+                )}
             </div>
         )
     }

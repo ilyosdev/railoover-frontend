@@ -2,8 +2,9 @@ import {
     DeleteOutlined,
     EyeInvisibleOutlined,
     EyeOutlined,
+    LinkOutlined,
 } from '@ant-design/icons'
-import { Button, Space, Table, Tag } from 'antd'
+import { Button, Space, Table, Tag, Tooltip } from 'antd'
 import { ColumnType } from 'antd/lib/table'
 import React, { Component } from 'react'
 import { IAppEnvVar } from '../apps/AppDefinition'
@@ -53,23 +54,53 @@ export default class EnvVarTable extends Component<
         )
     }
 
+    isReferenceValue(value: string): boolean {
+        return value.includes('${{') && value.includes('}}')
+    }
+
+    extractReferenceName(value: string): string | null {
+        const match = value.match(/\$\{\{([^}]+)\}\}/)
+        return match ? match[1] : null
+    }
+
     renderValue(envVar: IAppEnvVar, isInherited: boolean): React.ReactNode {
         const isSensitive = this.isSensitiveKey(envVar.key)
         const isMasked = this.state.maskedKeys[envVar.key] !== false
+        const isReference = this.isReferenceValue(envVar.value)
+        const refName = isReference
+            ? this.extractReferenceName(envVar.value)
+            : null
 
         const value = isSensitive && isMasked ? '••••••••' : envVar.value
 
         return (
             <Space>
-                <span
-                    style={{
-                        color: isInherited ? '#888' : undefined,
-                        fontFamily: 'monospace',
-                    }}
-                >
-                    {value}
-                </span>
-                {isSensitive && (
+                {isReference ? (
+                    <Tooltip title={`References: ${refName}`}>
+                        <span
+                            style={{
+                                color: '#722ed1',
+                                fontFamily: 'monospace',
+                                display: 'flex',
+                                alignItems: 'center',
+                                gap: 4,
+                            }}
+                        >
+                            <LinkOutlined />
+                            {value}
+                        </span>
+                    </Tooltip>
+                ) : (
+                    <span
+                        style={{
+                            color: isInherited ? '#888' : undefined,
+                            fontFamily: 'monospace',
+                        }}
+                    >
+                        {value}
+                    </span>
+                )}
+                {isSensitive && !isReference && (
                     <Button
                         type="text"
                         size="small"

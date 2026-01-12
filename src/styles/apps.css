@@ -1,0 +1,522 @@
+/* ========================================
+   APPS PAGE - MODERN DESIGN
+   ======================================== */
+
+/* ========================================
+   APPS CARD CONTAINER
+   ======================================== */
+.apps-container .ant-card {
+    background: rgba(255, 255, 255, 0.03) !important;
+    backdrop-filter: blur(20px) saturate(180%);
+    -webkit-backdrop-filter: blur(20px) saturate(180%);
+    border: 1px solid rgba(255, 255, 255, 0.08) !important;
+    border-radius: 16px !important;
+    box-shadow:
+        0 4px 16px rgba(0, 0, 0, 0.1),
+        0 0 0 1px rgba(255, 255, 255, 0.05) inset;
+}
+
+.apps-container .ant-card-head {
+    background: transparent !important;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.08) !important;
+}
+
+.apps-container .ant-card-body {
+    padding: 24px !important;
+}
+
+/* ========================================
+   TABLE STYLING
+   ======================================== */
+.ant-table {
+    background: transparent !important;
+    color: rgba(255, 255, 255, 0.85) !important;
+}
+
+.ant-table-wrapper {
+    background: transparent !important;
+}
+
+.ant-table-thead > tr > th {
+    background: rgba(79, 91, 255, 0.1) !important;
+    border-bottom: 2px solid rgba(79, 91, 255, 0.3) !important;
+    color: rgba(255, 255, 255, 0.95) !important;
+    font-weight: 600 !important;
+    font-size: 13px !important;
+    padding: 14px 16px !important;
+    transition: background 0.3s ease;
+}
+
+.ant-table-thead > tr > th:hover {
+    background: rgba(79, 91, 255, 0.15) !important;
+}
+
+.ant-table-thead > tr > th::before {
+    display: none !important;
+}
+
+.ant-table-tbody > tr {
+    background: transparent !important;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.ant-table-tbody > tr:hover {
+    background: rgba(255, 255, 255, 0.05) !important;
+    transform: scale(1.005);
+    box-shadow: 0 2px 8px rgba(79, 91, 255, 0.1);
+}
+
+.ant-table-tbody > tr > td {
+    border-bottom: 1px solid rgba(255, 255, 255, 0.05) !important;
+    color: rgba(255, 255, 255, 0.85) !important;
+    padding: 12px 16px !important;
+}
+
+.ant-table-tbody > tr > td a {
+    color: #6370ff !important;
+    font-weight: 500 !important;
+    transition: all 0.2s ease;
+    text-decoration: none;
+}
+
+.ant-table-tbody > tr > td a:hover {
+    color: #4f5bff !important;
+    text-decoration: underline;
+}
+
+.ant-table-column-sorter {
+    color: rgba(255, 255, 255, 0.6) !important;
+}
+
+.ant-table-column-sorter-up.active,
+.ant-table-column-sorter-down.active {
+    color: #4f5bff !important;
+}
+
+.ant-table-selection-column {
+    padding-inline-start: 16px !important;
+}
+
+.ant-checkbox-wrapper {
+    color: rgba(255, 255, 255, 0.85) !important;
+}
+
+.ant-checkbox-inner {
+    background: rgba(255, 255, 255, 0.05) !important;
+    border-color: rgba(255, 255, 255, 0.2) !important;
+    transition: all 0.3s ease;
+}
+
+.ant-checkbox-wrapper:hover .ant-checkbox-inner,
+.ant-checkbox:hover .ant-checkbox-inner {
+    border-color: rgba(79, 91, 255, 0.6) !important;
+}
+
+.ant-checkbox-checked .ant-checkbox-inner {
+    background: linear-gradient(135deg, #4f5bff 0%, #6370ff 100%) !important;
+    border-color: #4f5bff !important;
+}
+
+.ant-checkbox-checked::after {
+    border-color: #4f5bff !important;
+}
+
+/* ========================================
+   TREE VIEW (PROJECTS)
+   ======================================== */
+.ant-tree {
+    background: transparent !important;
+    color: rgba(255, 255, 255, 0.85) !important;
+}
+
+.ant-tree-node-content-wrapper {
+    padding: 6px 10px !important;
+    border-radius: 8px !important;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.ant-tree-node-content-wrapper:hover {
+    background: rgba(79, 91, 255, 0.1) !important;
+}
+
+.ant-tree-node-selected .ant-tree-node-content-wrapper {
+    background: rgba(79, 91, 255, 0.2) !important;
+    box-shadow:
+        0 2px 6px rgba(79, 91, 255, 0.2),
+        0 0 0 1px rgba(79, 91, 255, 0.3) inset;
+}
+
+.ant-tree-node-content-wrapper-open,
+.ant-tree-node-content-wrapper-close {
+    color: rgba(255, 255, 255, 0.85) !important;
+}
+
+.ant-tree-switcher {
+    color: rgba(255, 255, 255, 0.5) !important;
+}
+
+.ant-tree-switcher:hover {
+    color: rgba(255, 255, 255, 0.85) !important;
+}
+
+.ant-tree .ant-tree-treenode {
+    padding: 2px 0 !important;
+}
+
+.ant-tree .ant-tree-checkbox-inner {
+    background: rgba(255, 255, 255, 0.05) !important;
+    border-color: rgba(255, 255, 255, 0.2) !important;
+}
+
+.ant-tree .ant-tree-checkbox-checked .ant-tree-checkbox-inner {
+    background: linear-gradient(135deg, #4f5bff 0%, #6370ff 100%) !important;
+    border-color: #4f5bff !important;
+}
+
+/* ========================================
+   TAGS
+   ======================================== */
+.ant-tag {
+    background: rgba(79, 91, 255, 0.15) !important;
+    border: 1px solid rgba(79, 91, 255, 0.3) !important;
+    color: rgba(255, 255, 255, 0.9) !important;
+    border-radius: 6px !important;
+    padding: 2px 10px !important;
+    font-size: 12px !important;
+    font-weight: 500 !important;
+    transition: all 0.3s ease;
+}
+
+.ant-tag:hover {
+    background: rgba(79, 91, 255, 0.25) !important;
+    border-color: rgba(79, 91, 255, 0.5) !important;
+    transform: translateY(-1px);
+    box-shadow: 0 2px 6px rgba(79, 91, 255, 0.3);
+}
+
+.ant-tag a {
+    color: rgba(255, 255, 255, 0.9) !important;
+    text-decoration: none !important;
+}
+
+/* ========================================
+   SPLITTER
+   ======================================== */
+.ant-splitter {
+    background: transparent !important;
+}
+
+.ant-splitter-bar {
+    background: rgba(255, 255, 255, 0.05) !important;
+    transition: background 0.3s ease;
+}
+
+.ant-splitter-bar:hover,
+.ant-splitter-bar-dragging {
+    background: rgba(79, 91, 255, 0.3) !important;
+}
+
+.ant-splitter-bar::before {
+    background: rgba(79, 91, 255, 0.5) !important;
+}
+
+/* ========================================
+   SEARCH INPUT
+   ======================================== */
+.apps-container .ant-input {
+    background: rgba(255, 255, 255, 0.05) !important;
+    border: 1px solid rgba(255, 255, 255, 0.1) !important;
+    color: rgba(255, 255, 255, 0.95) !important;
+    border-radius: 10px !important;
+    padding: 8px 12px !important;
+    transition: all 0.3s ease;
+}
+
+.apps-container .ant-input::placeholder {
+    color: rgba(255, 255, 255, 0.4) !important;
+}
+
+.apps-container .ant-input:hover {
+    border-color: rgba(79, 91, 255, 0.5) !important;
+    background: rgba(255, 255, 255, 0.08) !important;
+}
+
+.apps-container .ant-input:focus {
+    border-color: rgba(79, 91, 255, 0.8) !important;
+    background: rgba(255, 255, 255, 0.1) !important;
+    box-shadow:
+        0 0 0 3px rgba(79, 91, 255, 0.15),
+        0 4px 12px rgba(79, 91, 255, 0.3);
+}
+
+/* ========================================
+   ICONS
+   ======================================== */
+.apps-container .anticon {
+    transition: all 0.2s ease;
+}
+
+.apps-container .anticon:hover {
+    transform: scale(1.15);
+    color: #4f5bff !important;
+}
+
+.ant-table-tbody .anticon-loading {
+    color: #4f5bff !important;
+    animation: icon-spin 1s linear infinite;
+}
+
+@keyframes icon-spin {
+    0% {
+        transform: rotate(0deg);
+    }
+    100% {
+        transform: rotate(360deg);
+    }
+}
+
+/* ========================================
+   MOBILE CARDS
+   ======================================== */
+.apps-container .ant-card-type-inner {
+    background: rgba(255, 255, 255, 0.05) !important;
+    border: 1px solid rgba(255, 255, 255, 0.1) !important;
+    border-radius: 12px !important;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.apps-container .ant-card-type-inner:hover {
+    transform: translateY(-4px);
+    border-color: rgba(79, 91, 255, 0.4) !important;
+    box-shadow:
+        0 8px 24px rgba(79, 91, 255, 0.2),
+        0 0 0 1px rgba(79, 91, 255, 0.2) inset;
+}
+
+.apps-container .ant-card-type-inner .ant-card-head {
+    background: rgba(79, 91, 255, 0.1) !important;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1) !important;
+}
+
+.apps-container .ant-card-type-inner .ant-card-head-title {
+    color: rgba(255, 255, 255, 0.95) !important;
+    font-weight: 600 !important;
+}
+
+.apps-container .ant-card-type-inner .ant-card-body {
+    padding: 16px !important;
+}
+
+.apps-container .ant-card-type-inner .ant-card-body p {
+    color: rgba(255, 255, 255, 0.8) !important;
+    margin-bottom: 8px !important;
+}
+
+/* ========================================
+   TIMESTAMP STYLING
+   ======================================== */
+.apps-container time {
+    color: rgba(255, 255, 255, 0.7) !important;
+    font-size: 13px !important;
+}
+
+/* ========================================
+   DESCRIPTION PANEL
+   ======================================== */
+.description-panel {
+    background: rgba(79, 91, 255, 0.05) !important;
+    border: 1px solid rgba(79, 91, 255, 0.2) !important;
+    border-radius: 12px !important;
+    padding: 16px !important;
+    margin-top: 16px !important;
+    color: rgba(255, 255, 255, 0.85) !important;
+}
+
+.description-panel h4 {
+    color: rgba(255, 255, 255, 0.95) !important;
+    font-weight: 600 !important;
+    margin-bottom: 12px !important;
+}
+
+/* ========================================
+   PROJECT BREADCRUMBS
+   ======================================== */
+.apps-container h4 {
+    color: rgba(255, 255, 255, 0.95) !important;
+    font-weight: 600 !important;
+    margin-bottom: 16px !important;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.apps-container h4 .anticon {
+    color: #4f5bff !important;
+}
+
+/* ========================================
+   BUTTONS IN APPS
+   ======================================== */
+.apps-container .ant-btn {
+    border-radius: 10px !important;
+    font-weight: 500 !important;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1) !important;
+    padding: 8px 20px !important;
+    height: auto !important;
+}
+
+.apps-container .ant-btn-primary {
+    background: linear-gradient(135deg, #4f5bff 0%, #6370ff 100%) !important;
+    border: none !important;
+    color: #ffffff !important;
+    box-shadow: 0 4px 12px rgba(79, 91, 255, 0.3);
+}
+
+.apps-container .ant-btn-primary:hover:not(:disabled) {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba(79, 91, 255, 0.5);
+}
+
+.apps-container .ant-btn-default {
+    background: rgba(255, 255, 255, 0.05) !important;
+    border: 1px solid rgba(255, 255, 255, 0.15) !important;
+    color: rgba(255, 255, 255, 0.9) !important;
+}
+
+.apps-container .ant-btn-default:hover:not(:disabled) {
+    background: rgba(255, 255, 255, 0.1) !important;
+    border-color: rgba(79, 91, 255, 0.5) !important;
+    transform: translateY(-2px);
+}
+
+.apps-container .ant-btn-text {
+    color: rgba(255, 255, 255, 0.8) !important;
+}
+
+.apps-container .ant-btn-text:hover:not(:disabled) {
+    background: rgba(255, 255, 255, 0.08) !important;
+    color: rgba(255, 255, 255, 0.95) !important;
+}
+
+.apps-container .ant-btn-text.ant-btn-dangerous {
+    color: #ef4444 !important;
+}
+
+.apps-container .ant-btn-text.ant-btn-dangerous:hover:not(:disabled) {
+    background: rgba(239, 68, 68, 0.1) !important;
+    color: #dc2626 !important;
+}
+
+.apps-container .ant-btn-circle {
+    background: rgba(255, 255, 255, 0.05) !important;
+    border: 1px solid rgba(255, 255, 255, 0.15) !important;
+    color: rgba(255, 255, 255, 0.9) !important;
+}
+
+.apps-container .ant-btn-circle:hover:not(:disabled) {
+    background: rgba(79, 91, 255, 0.2) !important;
+    border-color: rgba(79, 91, 255, 0.5) !important;
+    transform: scale(1.1);
+}
+
+/* ========================================
+   TOOLTIPS IN APPS
+   ======================================== */
+.apps-container .ant-tooltip-inner {
+    background: rgba(22, 23, 41, 0.95) !important;
+    backdrop-filter: blur(10px) !important;
+    -webkit-backdrop-filter: blur(10px) !important;
+    border: 1px solid rgba(255, 255, 255, 0.1) !important;
+    border-radius: 8px !important;
+    color: rgba(255, 255, 255, 0.95) !important;
+}
+
+/* ========================================
+   HR DIVIDER
+   ======================================== */
+.apps-container hr {
+    border: none !important;
+    height: 1px !important;
+    background: linear-gradient(
+        90deg,
+        transparent 0%,
+        rgba(255, 255, 255, 0.1) 50%,
+        transparent 100%
+    ) !important;
+    margin: 16px 0 !important;
+}
+
+/* ========================================
+   FADE IN ANIMATION
+   ======================================== */
+.slow-fadein-fast {
+    animation: fadein 0.4s ease-in;
+}
+
+@keyframes fadein {
+    from {
+        opacity: 0;
+        transform: translateY(10px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* ========================================
+   RESPONSIVE DESIGN
+   ======================================== */
+@media (max-width: 992px) {
+    .ant-table-thead > tr > th {
+        padding: 12px 12px !important;
+        font-size: 12px !important;
+    }
+
+    .ant-table-tbody > tr > td {
+        padding: 10px 12px !important;
+        font-size: 13px !important;
+    }
+
+    .apps-container .ant-card-body {
+        padding: 16px !important;
+    }
+}
+
+@media (max-width: 576px) {
+    .apps-container .ant-card {
+        border-radius: 12px !important;
+    }
+
+    .apps-container .ant-card-body {
+        padding: 12px !important;
+    }
+
+    .apps-container .ant-btn {
+        padding: 6px 16px !important;
+        font-size: 13px !important;
+    }
+}
+
+/* ========================================
+   ACCESSIBILITY
+   ======================================== */
+@media (prefers-reduced-motion: reduce) {
+    .ant-table-tbody > tr,
+    .ant-tag,
+    .apps-container .ant-btn,
+    .apps-container .anticon {
+        transition: none !important;
+    }
+
+    .ant-table-tbody > tr:hover,
+    .ant-tag:hover,
+    .apps-container .ant-btn:hover,
+    .apps-container .anticon:hover {
+        transform: none !important;
+    }
+
+    .slow-fadein-fast {
+        animation: none !important;
+    }
+}

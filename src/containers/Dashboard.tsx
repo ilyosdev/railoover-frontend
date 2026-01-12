@@ -9,6 +9,7 @@ import ApiComponent from './global/ApiComponent'
 import CenteredSpinner from './global/CenteredSpinner'
 import ErrorRetry from './global/ErrorRetry'
 import NewTabLink from './global/NewTabLink'
+import '../styles/dashboard-sidebar.css'
 const Search = Input.Search
 
 export default class Dashboard extends ApiComponent<
@@ -148,7 +149,7 @@ export default class Dashboard extends ApiComponent<
                                 <p>
                                     {localize(
                                         'dashboard.enable_https_info',
-                                        "CapRover uses Let's Encrypt to provide free SSL Certificates (HTTPS)."
+                                        "Railover uses Let's Encrypt to provide free SSL Certificates (HTTPS)."
                                     )}
                                     {localize(
                                         'dashboard.enable_https_email_importance',
@@ -324,7 +325,7 @@ export default class Dashboard extends ApiComponent<
         }
 
         return (
-            <div>
+            <div className="dashboard-container">
                 {self.createInitialSetupIfNoRootSsl()}
                 <br />
                 {self.createPostFullSetupIfHasForceSsl()}
@@ -358,7 +359,7 @@ export default class Dashboard extends ApiComponent<
         const translatedBody = Utils.formatText(
             localize(
                 'dashboard.detailed_guide_setup_ip',
-                'The very first thing that CapRover needs is a root domain. For example, if you own %s1, you can use %s2 or %s3 as your root domain. First, you need to make sure that the ip address for all subdomains of the root domain resolve to the CapRover ip address. To do this, go to the DNS settings in your domain provider website, and set a wild card A entry. For example: %s4 where this IP is the IP address of your CapRover machine (server).'
+                'The very first thing that Railover needs is a root domain. For example, if you own %s1, you can use %s2 or %s3 as your root domain. First, you need to make sure that the ip address for all subdomains of the root domain resolve to the Railover ip address. To do this, go to the DNS settings in your domain provider website, and set a wild card A entry. For example: %s4 where this IP is the IP address of your Railover machine (server).'
             ),
             ['%s1', '%s2', '%s3', '%s4'],
             replacements
@@ -382,7 +383,7 @@ export default class Dashboard extends ApiComponent<
                     <Card
                         title={localize(
                             'dashboard.root_domain_configurations',
-                            'CapRover Root Domain Configurations'
+                            'Railover Root Domain Configurations'
                         )}
                     >
                         <div>
@@ -487,7 +488,7 @@ export default class Dashboard extends ApiComponent<
                     <Card
                         title={localize(
                             'dashboard.setup_panel_title',
-                            'CapRover Initial Setup'
+                            'Railover Initial Setup'
                         )}
                     >
                         <div>
@@ -504,17 +505,17 @@ export default class Dashboard extends ApiComponent<
                                 <b />{' '}
                                 {localize(
                                     'dashboard.successful_installation',
-                                    'You have installed CapRover successfully!'
+                                    'You have installed Railover successfully!'
                                 )}{' '}
                                 <b>
                                     {localize(
                                         'dashboard.https_setup_needed',
-                                        'But you still need to assign a domain and finish the HTTPS setup to fully set up CapRover!'
+                                        'But you still need to assign a domain and finish the HTTPS setup to fully set up Railover!'
                                     )}
                                 </b>
                                 {localize(
                                     'dashboard.setup_options',
-                                    'You can set up your CapRover instance in two ways:'
+                                    'You can set up your Railover instance in two ways:'
                                 )}
                             </p>
 
@@ -531,12 +532,12 @@ export default class Dashboard extends ApiComponent<
                                         'On your local machine, simply run the following commands'
                                     )}
                                     <br />
-                                    <code>npm i -g caprover</code>
+                                    <code>npm i -g railover</code>
                                     <br />
                                     <code>
                                         {localize(
-                                            'dashboard.caprover_serversetup',
-                                            'caprover serversetup'
+                                            'dashboard.railover_serversetup',
+                                            'railover serversetup'
                                         )}
                                     </code>
                                     .{' '}
@@ -571,7 +572,7 @@ export default class Dashboard extends ApiComponent<
         return (
             <Row justify="center">
                 <Col xs={{ span: 23 }} lg={{ span: 16 }}>
-                    <Card title="CapRover">
+                    <Card title="Railover">
                         <div>
                             <h3>
                                 {localize(
@@ -585,7 +586,7 @@ export default class Dashboard extends ApiComponent<
                             <p>
                                 {localize(
                                     'dashboard.caprover_setup_success',
-                                    'You have installed and set CapRover up successfully! You can now deploy your apps! Remember, with CapRover, you can deploy applications from source code (such as Node.js, PHP, Java, Ruby, Python etc), and you can also deploy ready to go applications such as MySQL, MongoDB, WordPress, Redis, and many more!'
+                                    'You have set up Railover successfully! You can now deploy your apps! Remember, with Railover, you can deploy applications from source code (such as Node.js, PHP, Java, Ruby, Python etc), and you can also deploy ready to go applications such as MySQL, MongoDB, WordPress, Redis, and many more!'
                                 )}
                             </p>
 

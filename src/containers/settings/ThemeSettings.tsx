@@ -63,7 +63,7 @@ const ThemeSettings = () => {
             <p>
                 {localize(
                     'themes.description',
-                    'CapRover comes with many built-in themes! Go ahead and select your favorite theme'
+                    'Railover comes with many built-in themes! Go ahead and select your favorite theme'
                 )}
             </p>
 
@@ -171,7 +171,7 @@ const ThemeSettings = () => {
                 >
                     {localize(
                         'themes.theme_custom_help',
-                        'You can customize CapRover theme by providing custom theme and inject elements (font, CSS, JS, etc) into the <head> section.'
+                        'You can customize Railover theme by providing custom theme and inject elements (font, CSS, JS, etc) into the <head> section.'
                     )}{' '}
                     <span>
                         {' '}
@@ -235,7 +235,7 @@ const ThemeSettings = () => {
                 >
                     {localize(
                         'themes.caprover_extra',
-                        'Other configuration passed to CapRover'
+                        'Other configuration passed to Railover'
                     )}
                 </div>
                 <CodeEdit

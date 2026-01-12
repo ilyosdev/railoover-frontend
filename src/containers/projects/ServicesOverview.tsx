@@ -1,9 +1,14 @@
-import { Button, Col, Row } from 'antd'
+import { Button, Col, Row, Segmented } from 'antd'
+import { AppstoreOutlined, ApartmentOutlined } from '@ant-design/icons'
 import { Component } from 'react'
 import { IAppDef } from '../apps/AppDefinition'
 import AddServiceModal from './AddServiceModal'
 import ServiceTypeSection from './ServiceTypeSection'
+import ProjectCanvas from './ProjectCanvas'
 import '../../styles/project-dashboard.css'
+import '../../styles/project-canvas.css'
+
+type ViewMode = 'cards' | 'canvas'
 
 interface ServicesOverviewProps {
     services: IAppDef[]
@@ -14,6 +19,7 @@ interface ServicesOverviewProps {
 
 interface ServicesOverviewState {
     showAddService: boolean
+    viewMode: ViewMode
 }
 
 export default class ServicesOverview extends Component<
@@ -24,40 +30,68 @@ export default class ServicesOverview extends Component<
         super(props)
         this.state = {
             showAddService: false,
+            viewMode: 'canvas',
         }
     }
 
     render() {
         const { services } = this.props
+        const { viewMode } = this.state
 
         const frontend = services.filter(
-            (s) => this.detectServiceType(s.appName || '') === 'frontend'
+            (s) => this.detectServiceType(s) === 'frontend'
         )
         const backend = services.filter(
-            (s) => this.detectServiceType(s.appName || '') === 'backend'
+            (s) => this.detectServiceType(s) === 'backend'
         )
         const databases = services.filter(
-            (s) => this.detectServiceType(s.appName || '') === 'database'
+            (s) => this.detectServiceType(s) === 'database'
         )
         const workers = services.filter(
-            (s) => this.detectServiceType(s.appName || '') === 'worker'
+            (s) => this.detectServiceType(s) === 'worker'
         )
 
         const hasNoServices = services.length === 0
 
         return (
             <div>
-                <Row gutter={[16, 16]} style={{ marginBottom: 24 }}>
-                    <Col span={24}>
+                <Row
+                    gutter={[16, 16]}
+                    style={{ marginBottom: 24 }}
+                    justify="space-between"
+                    align="middle"
+                >
+                    <Col>
                         <Button
                             type="primary"
                             size="large"
+                            className="add-service-button"
                             onClick={() =>
                                 this.setState({ showAddService: true })
                             }
                         >
                             Add Service
                         </Button>
+                    </Col>
+                    <Col>
+                        <Segmented
+                            value={viewMode}
+                            onChange={(value) =>
+                                this.setState({ viewMode: value as ViewMode })
+                            }
+                            options={[
+                                {
+                                    value: 'canvas',
+                                    icon: <ApartmentOutlined />,
+                                    label: 'Canvas',
+                                },
+                                {
+                                    value: 'cards',
+                                    icon: <AppstoreOutlined />,
+                                    label: 'Cards',
+                                },
+                            ]}
+                        />
                     </Col>
                 </Row>
 
@@ -78,44 +112,60 @@ export default class ServicesOverview extends Component<
                     </div>
                 )}
 
-                {frontend.length > 0 && (
-                    <ServiceTypeSection
-                        title="Frontend"
-                        services={frontend}
-                        color="#8b5cf6"
+                {!hasNoServices && viewMode === 'canvas' && (
+                    <ProjectCanvas
+                        services={services}
                         projectId={this.props.projectId}
                         onServiceClick={this.props.onServiceClick}
+                        onAddService={() =>
+                            this.setState({ showAddService: true })
+                        }
+                        onRefresh={this.props.onReloadRequested}
                     />
                 )}
 
-                {backend.length > 0 && (
-                    <ServiceTypeSection
-                        title="Backend"
-                        services={backend}
-                        color="#3b82f6"
-                        projectId={this.props.projectId}
-                        onServiceClick={this.props.onServiceClick}
-                    />
-                )}
+                {!hasNoServices && viewMode === 'cards' && (
+                    <>
+                        {frontend.length > 0 && (
+                            <ServiceTypeSection
+                                title="Frontend"
+                                services={frontend}
+                                color="#8b5cf6"
+                                projectId={this.props.projectId}
+                                onServiceClick={this.props.onServiceClick}
+                            />
+                        )}
 
-                {databases.length > 0 && (
-                    <ServiceTypeSection
-                        title="Databases"
-                        services={databases}
-                        color="#10b981"
-                        projectId={this.props.projectId}
-                        onServiceClick={this.props.onServiceClick}
-                    />
-                )}
+                        {backend.length > 0 && (
+                            <ServiceTypeSection
+                                title="Backend"
+                                services={backend}
+                                color="#3b82f6"
+                                projectId={this.props.projectId}
+                                onServiceClick={this.props.onServiceClick}
+                            />
+                        )}
 
-                {workers.length > 0 && (
-                    <ServiceTypeSection
-                        title="Workers"
-                        services={workers}
-                        color="#f59e0b"
-                        projectId={this.props.projectId}
-                        onServiceClick={this.props.onServiceClick}
-                    />
+                        {databases.length > 0 && (
+                            <ServiceTypeSection
+                                title="Databases"
+                                services={databases}
+                                color="#10b981"
+                                projectId={this.props.projectId}
+                                onServiceClick={this.props.onServiceClick}
+                            />
+                        )}
+
+                        {workers.length > 0 && (
+                            <ServiceTypeSection
+                                title="Workers"
+                                services={workers}
+                                color="#f59e0b"
+                                projectId={this.props.projectId}
+                                onServiceClick={this.props.onServiceClick}
+                            />
+                        )}
+                    </>
                 )}
 
                 <AddServiceModal
@@ -131,8 +181,17 @@ export default class ServicesOverview extends Component<
         )
     }
 
-    private detectServiceType(appName: string): string {
-        const name = appName.toLowerCase()
+    private detectServiceType(service: IAppDef): string {
+        const tags = service.tags || []
+        const knownTypes = ['frontend', 'backend', 'database', 'worker']
+        const typeTag = tags.find((t) =>
+            knownTypes.includes(t.tagName?.toLowerCase())
+        )
+        if (typeTag) {
+            return typeTag.tagName.toLowerCase()
+        }
+
+        const name = (service.appName || '').toLowerCase()
 
         if (
             name.includes('postgres') ||
@@ -147,6 +206,7 @@ export default class ServicesOverview extends Component<
 
         if (
             name.includes('frontend') ||
+            name.includes('front') ||
             name.includes('web') ||
             name.includes('ui') ||
             name.includes('client')

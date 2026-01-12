@@ -1,0 +1,634 @@
+/* ========================================
+   DASHBOARD & SIDEBAR MODERN DESIGN
+   ======================================== */
+
+/* ========================================
+   SIDEBAR - GLASSMORPHISM
+   ======================================== */
+.ant-layout-sider {
+    background: linear-gradient(
+        180deg,
+        rgba(22, 23, 41, 0.95) 0%,
+        rgba(22, 23, 41, 0.98) 100%
+    ) !important;
+    backdrop-filter: blur(10px) !important;
+    -webkit-backdrop-filter: blur(10px) !important;
+    border-right: 1px solid rgba(255, 255, 255, 0.05) !important;
+    box-shadow: 4px 0 24px rgba(0, 0, 0, 0.15);
+}
+
+.ant-layout-sider-light {
+    background: linear-gradient(
+        180deg,
+        rgba(255, 255, 255, 0.95) 0%,
+        rgba(250, 250, 252, 0.98) 100%
+    ) !important;
+    backdrop-filter: blur(10px) !important;
+    -webkit-backdrop-filter: blur(10px) !important;
+    border-right: 1px solid rgba(0, 0, 0, 0.06) !important;
+    box-shadow: 4px 0 24px rgba(0, 0, 0, 0.04);
+}
+
+.ant-menu-dark {
+    background: transparent !important;
+}
+
+.ant-menu-light {
+    background: transparent !important;
+}
+
+.ant-menu-item {
+    margin: 4px 8px !important;
+    border-radius: 10px !important;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1) !important;
+    position: relative;
+    overflow: hidden;
+}
+
+.ant-menu-item::before {
+    content: '';
+    position: absolute;
+    left: 0;
+    top: 0;
+    width: 3px;
+    height: 100%;
+    background: linear-gradient(135deg, #4f5bff 0%, #6370ff 100%);
+    opacity: 0;
+    transition: opacity 0.3s ease;
+}
+
+.ant-menu-item-selected::before {
+    opacity: 1;
+}
+
+.ant-menu-dark .ant-menu-item-selected {
+    background: rgba(79, 91, 255, 0.15) !important;
+    box-shadow:
+        0 2px 8px rgba(79, 91, 255, 0.2),
+        0 0 0 1px rgba(79, 91, 255, 0.3) inset;
+}
+
+.ant-menu-light .ant-menu-item-selected {
+    background: rgba(79, 91, 255, 0.08) !important;
+    box-shadow:
+        0 2px 8px rgba(79, 91, 255, 0.1),
+        0 0 0 1px rgba(79, 91, 255, 0.2) inset;
+}
+
+.ant-menu-item:hover {
+    transform: translateX(4px);
+    background: rgba(79, 91, 255, 0.1) !important;
+}
+
+.ant-menu-dark .ant-menu-item:hover {
+    background: rgba(255, 255, 255, 0.08) !important;
+}
+
+.ant-menu-light .ant-menu-item:hover {
+    background: rgba(0, 0, 0, 0.04) !important;
+}
+
+.ant-menu-item .anticon {
+    font-size: 16px;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.ant-menu-item:hover .anticon {
+    transform: scale(1.1) rotate(5deg);
+    color: #4f5bff;
+}
+
+.ant-menu-item-selected .anticon {
+    color: #4f5bff;
+}
+
+.ant-layout-sider-trigger {
+    background: rgba(79, 91, 255, 0.1) !important;
+    border-top: 1px solid rgba(255, 255, 255, 0.05) !important;
+    transition: all 0.3s ease;
+}
+
+.ant-layout-sider-trigger:hover {
+    background: rgba(79, 91, 255, 0.2) !important;
+}
+
+/* ========================================
+   DASHBOARD CONTAINER
+   ======================================== */
+.dashboard-container {
+    padding: 0 20px;
+    max-width: 1400px;
+    margin: 0 auto;
+}
+
+/* ========================================
+   DASHBOARD CARDS
+   ======================================== */
+.dashboard-card,
+.ant-card {
+    background: rgba(255, 255, 255, 0.03) !important;
+    backdrop-filter: blur(20px) saturate(180%);
+    -webkit-backdrop-filter: blur(20px) saturate(180%);
+    border: 1px solid rgba(255, 255, 255, 0.08) !important;
+    border-radius: 16px !important;
+    box-shadow:
+        0 4px 16px rgba(0, 0, 0, 0.1),
+        0 0 0 1px rgba(255, 255, 255, 0.05) inset;
+    transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.ant-card:hover {
+    transform: translateY(-4px);
+    border-color: rgba(79, 91, 255, 0.3) !important;
+    box-shadow:
+        0 12px 32px rgba(79, 91, 255, 0.15),
+        0 0 0 1px rgba(79, 91, 255, 0.2) inset;
+}
+
+.ant-card-head {
+    background: transparent !important;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.08) !important;
+    padding: 16px 24px !important;
+}
+
+.ant-card-head-title {
+    font-size: 18px !important;
+    font-weight: 600 !important;
+    color: rgba(255, 255, 255, 0.95) !important;
+    background: linear-gradient(135deg, #ffffff 0%, #a5b4fc 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+}
+
+.ant-card-body {
+    padding: 28px 32px !important;
+}
+
+@media (max-width: 768px) {
+    .ant-card-body {
+        padding: 24px 20px !important;
+    }
+}
+
+.ant-card-body p {
+    color: rgba(255, 255, 255, 0.85) !important;
+    line-height: 1.7 !important;
+    margin-bottom: 16px !important;
+    font-size: 14px !important;
+}
+
+.ant-card-body code {
+    background: rgba(79, 91, 255, 0.15) !important;
+    padding: 4px 10px !important;
+    border-radius: 8px !important;
+    color: rgba(255, 255, 255, 0.95) !important;
+    font-family:
+        'Monaco', 'Menlo', 'Ubuntu Mono', 'Courier New', monospace !important;
+    font-size: 13px !important;
+    border: 1px solid rgba(79, 91, 255, 0.3) !important;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+    font-weight: 500 !important;
+}
+
+pre {
+    background: rgba(15, 12, 41, 0.6) !important;
+    border: 1px solid rgba(79, 91, 255, 0.3) !important;
+    border-radius: 10px !important;
+    padding: 16px !important;
+    margin: 12px 0 !important;
+    overflow-x: auto;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+}
+
+pre code {
+    background: transparent !important;
+    border: none !important;
+    padding: 0 !important;
+    box-shadow: none !important;
+    color: rgba(255, 255, 255, 0.9) !important;
+    font-size: 13px !important;
+    line-height: 1.6 !important;
+}
+
+.ant-card-body h3 {
+    color: rgba(255, 255, 255, 0.98) !important;
+    font-weight: 700 !important;
+    font-size: 20px !important;
+    margin-bottom: 20px !important;
+    margin-top: 8px !important;
+    letter-spacing: -0.3px;
+}
+
+.ant-card-body ul {
+    color: rgba(255, 255, 255, 0.85) !important;
+    padding-left: 24px !important;
+    margin: 16px 0 !important;
+}
+
+.ant-card-body ul li {
+    margin-bottom: 16px !important;
+    line-height: 1.7 !important;
+    font-size: 14px !important;
+}
+
+.ant-card-body ul li:last-child {
+    margin-bottom: 0 !important;
+}
+
+.ant-card-body b {
+    color: rgba(255, 255, 255, 0.95) !important;
+    font-weight: 600 !important;
+}
+
+.ant-card-body i {
+    color: rgba(255, 255, 255, 0.7) !important;
+}
+
+.ant-card-body a {
+    color: #6370ff !important;
+    text-decoration: none !important;
+    font-weight: 500 !important;
+    transition: all 0.2s ease;
+}
+
+.ant-card-body a:hover {
+    color: #4f5bff !important;
+    text-decoration: underline !important;
+}
+
+/* ========================================
+   DASHBOARD INPUT FIELDS
+   ======================================== */
+.ant-input-search {
+    border-radius: 12px !important;
+}
+
+.ant-input-search .ant-input {
+    background: rgba(255, 255, 255, 0.05) !important;
+    border: 1px solid rgba(255, 255, 255, 0.1) !important;
+    color: rgba(255, 255, 255, 0.95) !important;
+    border-radius: 12px 0 0 12px !important;
+    padding: 12px 16px !important;
+    transition: all 0.3s ease;
+}
+
+.ant-input-search .ant-input:hover {
+    border-color: rgba(79, 91, 255, 0.5) !important;
+    background: rgba(255, 255, 255, 0.08) !important;
+}
+
+.ant-input-search .ant-input:focus {
+    border-color: rgba(79, 91, 255, 0.8) !important;
+    background: rgba(255, 255, 255, 0.1) !important;
+    box-shadow:
+        0 0 0 3px rgba(79, 91, 255, 0.15),
+        0 4px 12px rgba(79, 91, 255, 0.3);
+}
+
+.ant-input-search .ant-input::placeholder {
+    color: rgba(255, 255, 255, 0.4) !important;
+}
+
+.ant-input-search .ant-input-group-addon,
+.ant-input-group-addon {
+    background: rgba(79, 91, 255, 0.2) !important;
+    border: 1px solid rgba(79, 91, 255, 0.3) !important;
+    color: rgba(255, 255, 255, 0.95) !important;
+    font-weight: 600 !important;
+    font-family:
+        'Monaco', 'Menlo', 'Ubuntu Mono', 'Courier New', monospace !important;
+    font-size: 13px !important;
+    padding: 0 14px !important;
+}
+
+.ant-input-search-button {
+    background: linear-gradient(135deg, #4f5bff 0%, #6370ff 100%) !important;
+    border: none !important;
+    border-radius: 0 12px 12px 0 !important;
+    color: #ffffff !important;
+    font-weight: 600 !important;
+    padding: 0 24px !important;
+    height: auto !important;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.ant-input-search-button:hover {
+    transform: translateX(2px);
+    box-shadow: 0 4px 12px rgba(79, 91, 255, 0.4);
+}
+
+/* ========================================
+   DASHBOARD BUTTONS
+   ======================================== */
+.ant-btn {
+    border-radius: 10px !important;
+    font-weight: 500 !important;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1) !important;
+    padding: 8px 20px !important;
+    height: auto !important;
+}
+
+.ant-btn-primary {
+    background: linear-gradient(135deg, #4f5bff 0%, #6370ff 100%) !important;
+    border: none !important;
+    color: #ffffff !important;
+    box-shadow: 0 4px 12px rgba(79, 91, 255, 0.3);
+}
+
+.ant-btn-primary:hover:not(:disabled) {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba(79, 91, 255, 0.5);
+}
+
+.ant-btn-primary:active {
+    transform: translateY(0px);
+}
+
+.ant-btn-default {
+    background: rgba(255, 255, 255, 0.08) !important;
+    border: 1px solid rgba(255, 255, 255, 0.2) !important;
+    color: rgba(255, 255, 255, 0.95) !important;
+    font-weight: 500 !important;
+}
+
+.ant-btn-default:hover:not(:disabled) {
+    background: rgba(79, 91, 255, 0.15) !important;
+    border-color: rgba(79, 91, 255, 0.5) !important;
+    color: #ffffff !important;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(79, 91, 255, 0.25);
+}
+
+.ant-btn-default:disabled {
+    background: rgba(255, 255, 255, 0.02) !important;
+    border: 1px solid rgba(255, 255, 255, 0.08) !important;
+    color: rgba(255, 255, 255, 0.3) !important;
+    cursor: not-allowed;
+    opacity: 0.5;
+}
+
+.ant-btn-dashed {
+    background: rgba(255, 255, 255, 0.03) !important;
+    border: 1px dashed rgba(255, 255, 255, 0.2) !important;
+    color: rgba(255, 255, 255, 0.8) !important;
+}
+
+.ant-btn-dashed:hover:not(:disabled) {
+    background: rgba(255, 255, 255, 0.08) !important;
+    border-color: rgba(79, 91, 255, 0.5) !important;
+    color: rgba(255, 255, 255, 0.95) !important;
+}
+
+.ant-btn:disabled {
+    opacity: 0.4;
+    cursor: not-allowed;
+}
+
+/* ========================================
+   TOOLTIPS
+   ======================================== */
+.ant-tooltip {
+    max-width: 350px;
+}
+
+.ant-tooltip-inner {
+    background: rgba(22, 23, 41, 0.95) !important;
+    backdrop-filter: blur(10px) !important;
+    -webkit-backdrop-filter: blur(10px) !important;
+    border: 1px solid rgba(255, 255, 255, 0.1) !important;
+    border-radius: 8px !important;
+    padding: 10px 14px !important;
+    color: rgba(255, 255, 255, 0.95) !important;
+    font-size: 13px !important;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+}
+
+.ant-tooltip-arrow-content {
+    background: rgba(22, 23, 41, 0.95) !important;
+}
+
+/* ========================================
+   SIDEBAR - GLASSMORPHISM
+   ======================================== */
+.ant-layout-sider {
+    background: linear-gradient(
+        180deg,
+        rgba(22, 23, 41, 0.95) 0%,
+        rgba(22, 23, 41, 0.98) 100%
+    ) !important;
+    backdrop-filter: blur(10px) !important;
+    -webkit-backdrop-filter: blur(10px) !important;
+    border-right: 1px solid rgba(255, 255, 255, 0.05) !important;
+    box-shadow: 4px 0 24px rgba(0, 0, 0, 0.15);
+}
+
+.sidebar-logo-container {
+    height: 64px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0 16px;
+    gap: 12px;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+    background: linear-gradient(
+        135deg,
+        rgba(79, 91, 255, 0.1) 0%,
+        rgba(99, 112, 255, 0.05) 100%
+    );
+    transition: all 0.3s ease;
+}
+
+.sidebar-logo-image {
+    width: 36px;
+    height: 36px;
+    border-radius: 8px;
+    box-shadow: 0 2px 8px rgba(79, 91, 255, 0.3);
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.sidebar-logo-container:hover .sidebar-logo-image {
+    transform: scale(1.05);
+    box-shadow: 0 4px 16px rgba(79, 91, 255, 0.5);
+}
+
+.sidebar-logo-text {
+    font-size: 18px;
+    font-weight: 700;
+    background: linear-gradient(135deg, #ffffff 0%, #a5b4fc 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    letter-spacing: -0.5px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.ant-layout-sider-collapsed .sidebar-logo-container {
+    padding: 0 22px;
+}
+
+.ant-layout-sider-collapsed .sidebar-logo-image {
+    width: 32px;
+    height: 32px;
+}
+
+.ant-modal-content {
+    background: rgba(22, 23, 41, 0.98) !important;
+    backdrop-filter: blur(20px) !important;
+    -webkit-backdrop-filter: blur(20px) !important;
+    border: 1px solid rgba(255, 255, 255, 0.1) !important;
+    border-radius: 16px !important;
+    box-shadow: 0 24px 48px rgba(0, 0, 0, 0.4);
+}
+
+.ant-modal-header {
+    background: transparent !important;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.08) !important;
+    border-radius: 16px 16px 0 0 !important;
+    padding: 20px 24px !important;
+}
+
+.ant-modal-title {
+    color: rgba(255, 255, 255, 0.95) !important;
+    font-size: 18px !important;
+    font-weight: 600 !important;
+}
+
+.ant-modal-body {
+    padding: 24px !important;
+    color: rgba(255, 255, 255, 0.85) !important;
+}
+
+.ant-modal-body p {
+    color: rgba(255, 255, 255, 0.8) !important;
+    line-height: 1.6 !important;
+    margin-bottom: 12px !important;
+}
+
+.ant-modal-body code {
+    background: rgba(79, 91, 255, 0.15) !important;
+    padding: 4px 8px !important;
+    border-radius: 6px !important;
+    color: rgba(255, 255, 255, 0.95) !important;
+    border: 1px solid rgba(79, 91, 255, 0.2) !important;
+}
+
+.ant-modal-footer {
+    background: transparent !important;
+    border-top: 1px solid rgba(255, 255, 255, 0.08) !important;
+    padding: 16px 24px !important;
+    border-radius: 0 0 16px 16px !important;
+}
+
+.ant-modal-close {
+    color: rgba(255, 255, 255, 0.6) !important;
+    transition: all 0.2s ease;
+}
+
+.ant-modal-close:hover {
+    color: rgba(255, 255, 255, 0.95) !important;
+    background: rgba(255, 255, 255, 0.1) !important;
+}
+
+.ant-modal .ant-input {
+    background: rgba(255, 255, 255, 0.05) !important;
+    border: 1px solid rgba(255, 255, 255, 0.1) !important;
+    color: rgba(255, 255, 255, 0.95) !important;
+    border-radius: 10px !important;
+    padding: 10px 14px !important;
+}
+
+.ant-modal .ant-input::placeholder {
+    color: rgba(255, 255, 255, 0.4) !important;
+}
+
+.ant-modal .ant-input:hover {
+    border-color: rgba(79, 91, 255, 0.5) !important;
+}
+
+.ant-modal .ant-input:focus {
+    border-color: rgba(79, 91, 255, 0.8) !important;
+    box-shadow:
+        0 0 0 3px rgba(79, 91, 255, 0.15),
+        0 4px 12px rgba(79, 91, 255, 0.3);
+}
+
+/* ========================================
+   RESPONSIVE DESIGN
+   ======================================== */
+@media (max-width: 992px) {
+    .ant-card {
+        border-radius: 14px !important;
+    }
+
+    .ant-card-head {
+        padding: 14px 20px !important;
+    }
+
+    .ant-card-body {
+        padding: 20px !important;
+    }
+}
+
+@media (max-width: 576px) {
+    .ant-card {
+        border-radius: 12px !important;
+    }
+
+    .ant-card-head {
+        padding: 12px 16px !important;
+    }
+
+    .ant-card-head-title {
+        font-size: 16px !important;
+    }
+
+    .ant-card-body {
+        padding: 16px !important;
+    }
+
+    .ant-btn {
+        padding: 6px 16px !important;
+    }
+}
+
+/* ========================================
+   ACCESSIBILITY
+   ======================================== */
+@media (prefers-reduced-motion: reduce) {
+    .ant-card,
+    .ant-menu-item,
+    .ant-btn,
+    .ant-input {
+        transition: none !important;
+    }
+
+    .ant-card:hover,
+    .ant-menu-item:hover,
+    .ant-btn:hover {
+        transform: none !important;
+    }
+}
+
+/* ========================================
+   HR DIVIDER STYLING
+   ======================================== */
+.ant-card hr,
+hr {
+    border: none !important;
+    height: 1px !important;
+    background: linear-gradient(
+        90deg,
+        transparent 0%,
+        rgba(255, 255, 255, 0.12) 50%,
+        transparent 100%
+    ) !important;
+    margin: 28px 0 !important;
+    opacity: 0.8;
+}
+
+.dashboard-container hr {
+    margin: 32px 0 !important;
+}

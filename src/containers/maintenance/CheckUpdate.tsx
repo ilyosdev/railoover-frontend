@@ -74,7 +74,7 @@ export default class CheckUpdate extends ApiComponent<
                 <p>
                     {localize(
                         'check_update.in_place_updates',
-                        'CapRover allows in-place updates to be installed. However, always read the change logs before updating your CapRover. There might be breaking changes that you need to be aware of. The update usually takes around 60 seconds and your CapRover may become unresponsive until the update process is finished. Your apps will stay functional and responsive during this time, except for a very short period of 10 seconds or less.'
+                        'Railover allows in-place updates to be installed. However, always read the change logs before updating your Railover. There might be breaking changes that you need to be aware of. The update usually takes around 60 seconds and your Railover may become unresponsive until the update process is finished. Your apps will stay functional and responsive during this time, except for a very short period of 10 seconds or less.'
                     )}
                 </p>
                 <br />
@@ -132,7 +132,7 @@ export default class CheckUpdate extends ApiComponent<
                     <Alert
                         message={localize(
                             'check_update.latest_version_message',
-                            'Your CapRover is the latest version.'
+                            'Your Railover is the latest version.'
                         )}
                         type="info"
                     />
@@ -151,7 +151,7 @@ export default class CheckUpdate extends ApiComponent<
                         <p>
                             {localize(
                                 'check_update.caprover_unresponsive',
-                                'Your CapRover dashboard is not functional during the update. Please wait until this page is refreshed automatically.'
+                                'Your Railover dashboard is not functional during the update. Please wait until this page is refreshed automatically.'
                             )}
                         </p>
                         <p>

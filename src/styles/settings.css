@@ -1,0 +1,195 @@
+/* ========================================
+   SETTINGS PAGE - MODERN DESIGN
+   ======================================== */
+
+.settings-container {
+    padding: 0 20px;
+    min-height: 100vh;
+}
+
+.settings-container .ant-card {
+    background: rgba(255, 255, 255, 0.03) !important;
+    backdrop-filter: blur(20px) saturate(180%);
+    -webkit-backdrop-filter: blur(20px) saturate(180%);
+    border: 1px solid rgba(255, 255, 255, 0.08) !important;
+    border-radius: 16px !important;
+    box-shadow:
+        0 4px 16px rgba(0, 0, 0, 0.1),
+        0 0 0 1px rgba(255, 255, 255, 0.05) inset;
+    transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.settings-container .ant-card:hover {
+    transform: translateY(-4px);
+    border-color: rgba(79, 91, 255, 0.3) !important;
+    box-shadow:
+        0 12px 32px rgba(79, 91, 255, 0.15),
+        0 0 0 1px rgba(79, 91, 255, 0.2) inset;
+}
+
+.settings-container .ant-card-head {
+    background: transparent !important;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.08) !important;
+}
+
+.settings-container .ant-card-head-title {
+    font-size: 18px !important;
+    font-weight: 600 !important;
+    color: rgba(255, 255, 255, 0.95) !important;
+    background: linear-gradient(135deg, #ffffff 0%, #a5b4fc 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+}
+
+.settings-container .ant-card-body {
+    padding: 24px !important;
+}
+
+.settings-container .ant-card-body p,
+.settings-container .ant-card-body label {
+    color: rgba(255, 255, 255, 0.8) !important;
+}
+
+.settings-container .ant-input,
+.settings-container .ant-input-password {
+    background: rgba(255, 255, 255, 0.05) !important;
+    border: 1px solid rgba(255, 255, 255, 0.1) !important;
+    color: rgba(255, 255, 255, 0.95) !important;
+    border-radius: 10px !important;
+}
+
+.settings-container .ant-input:hover,
+.settings-container .ant-input-password:hover {
+    border-color: rgba(79, 91, 255, 0.5) !important;
+    background: rgba(255, 255, 255, 0.08) !important;
+}
+
+.settings-container .ant-input:focus,
+.settings-container .ant-input-password:focus {
+    border-color: rgba(79, 91, 255, 0.8) !important;
+    background: rgba(255, 255, 255, 0.1) !important;
+    box-shadow:
+        0 0 0 3px rgba(79, 91, 255, 0.15),
+        0 4px 12px rgba(79, 91, 255, 0.3);
+}
+
+.settings-container .ant-input::placeholder {
+    color: rgba(255, 255, 255, 0.4) !important;
+}
+
+.settings-container .ant-btn {
+    border-radius: 10px !important;
+    font-weight: 500 !important;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1) !important;
+}
+
+.settings-container .ant-btn-primary {
+    background: linear-gradient(135deg, #4f5bff 0%, #6370ff 100%) !important;
+    border: none !important;
+    color: #ffffff !important;
+    box-shadow: 0 4px 12px rgba(79, 91, 255, 0.3);
+}
+
+.settings-container .ant-btn-primary:hover:not(:disabled) {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba(79, 91, 255, 0.5);
+}
+
+.settings-container .ant-btn-default {
+    background: rgba(255, 255, 255, 0.05) !important;
+    border: 1px solid rgba(255, 255, 255, 0.15) !important;
+    color: rgba(255, 255, 255, 0.9) !important;
+}
+
+.settings-container .ant-btn-default:hover:not(:disabled) {
+    background: rgba(255, 255, 255, 0.1) !important;
+    border-color: rgba(79, 91, 255, 0.5) !important;
+    transform: translateY(-2px);
+}
+
+.settings-container .ant-switch {
+    background: rgba(255, 255, 255, 0.2) !important;
+}
+
+.settings-container .ant-switch-checked {
+    background: linear-gradient(135deg, #4f5bff 0%, #6370ff 100%) !important;
+}
+
+.settings-container .ant-select-selector {
+    background: rgba(255, 255, 255, 0.05) !important;
+    border: 1px solid rgba(255, 255, 255, 0.1) !important;
+    border-radius: 10px !important;
+}
+
+.settings-container .ant-select-selector:hover {
+    border-color: rgba(79, 91, 255, 0.5) !important;
+}
+
+.settings-container .ant-select-selection-item {
+    color: rgba(255, 255, 255, 0.9) !important;
+}
+
+.settings-container .ant-select-arrow {
+    color: rgba(255, 255, 255, 0.6) !important;
+}
+
+.settings-container textarea.ant-input {
+    background: rgba(255, 255, 255, 0.05) !important;
+    border: 1px solid rgba(255, 255, 255, 0.1) !important;
+    color: rgba(255, 255, 255, 0.95) !important;
+    border-radius: 10px !important;
+}
+
+.settings-container textarea.ant-input:hover {
+    border-color: rgba(79, 91, 255, 0.5) !important;
+}
+
+.settings-container textarea.ant-input:focus {
+    border-color: rgba(79, 91, 255, 0.8) !important;
+    box-shadow:
+        0 0 0 3px rgba(79, 91, 255, 0.15),
+        0 4px 12px rgba(79, 91, 255, 0.3);
+}
+
+/* ========================================
+   RESPONSIVE DESIGN
+   ======================================== */
+@media (max-width: 992px) {
+    .settings-container {
+        padding: 0 16px;
+    }
+
+    .settings-container .ant-card-body {
+        padding: 20px !important;
+    }
+}
+
+@media (max-width: 576px) {
+    .settings-container {
+        padding: 0 12px;
+    }
+
+    .settings-container .ant-card {
+        border-radius: 12px !important;
+    }
+
+    .settings-container .ant-card-body {
+        padding: 16px !important;
+    }
+}
+
+/* ========================================
+   ACCESSIBILITY
+   ======================================== */
+@media (prefers-reduced-motion: reduce) {
+    .settings-container .ant-card,
+    .settings-container .ant-btn {
+        transition: none !important;
+    }
+
+    .settings-container .ant-card:hover,
+    .settings-container .ant-btn:hover {
+        transform: none !important;
+    }
+}

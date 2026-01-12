@@ -139,7 +139,7 @@ export default class ProFeatures extends ApiComponent<
                 <div>
                     {localize(
                         'pro_features.upgrade_to_caprover_pro',
-                        'Upgrade to CapRover PRO to take advantage of premium features!'
+                        'Upgrade to Railover PRO to take advantage of premium features!'
                     )}
                 </div>
                 <ul>

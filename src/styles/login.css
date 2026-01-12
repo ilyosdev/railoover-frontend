@@ -1,0 +1,513 @@
+/* ========================================
+   LOGIN PAGE - MODERN DESIGN
+   ======================================== */
+
+/* ========================================
+   ANIMATED GRADIENT BACKGROUND
+   ======================================== */
+.login-page-container {
+    position: relative;
+    width: 100%;
+    height: 100vh;
+    overflow: hidden;
+    background: linear-gradient(135deg, #0f0c29 0%, #302b63 50%, #24243e 100%);
+}
+
+/* Animated gradient overlay */
+.login-page-container::before {
+    content: '';
+    position: absolute;
+    top: -50%;
+    left: -50%;
+    width: 200%;
+    height: 200%;
+    background: linear-gradient(
+        45deg,
+        rgba(79, 91, 255, 0.1) 0%,
+        rgba(99, 112, 255, 0.2) 25%,
+        transparent 50%,
+        rgba(139, 92, 246, 0.1) 75%,
+        rgba(79, 91, 255, 0.2) 100%
+    );
+    animation: login-gradient-shift 15s ease-in-out infinite;
+}
+
+@keyframes login-gradient-shift {
+    0%,
+    100% {
+        transform: translate(0, 0) rotate(0deg);
+    }
+    33% {
+        transform: translate(5%, 5%) rotate(120deg);
+    }
+    66% {
+        transform: translate(-5%, 5%) rotate(240deg);
+    }
+}
+
+/* ========================================
+   FLOATING PARTICLES
+   ======================================== */
+.login-particles {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    overflow: hidden;
+    pointer-events: none;
+    z-index: 1;
+}
+
+.login-particle {
+    position: absolute;
+    background: rgba(255, 255, 255, 0.1);
+    border-radius: 50%;
+    animation: login-particle-float linear infinite;
+}
+
+.login-particle:nth-child(1) {
+    width: 6px;
+    height: 6px;
+    left: 10%;
+    animation-duration: 15s;
+    animation-delay: 0s;
+}
+
+.login-particle:nth-child(2) {
+    width: 8px;
+    height: 8px;
+    left: 20%;
+    animation-duration: 18s;
+    animation-delay: 2s;
+}
+
+.login-particle:nth-child(3) {
+    width: 4px;
+    height: 4px;
+    left: 30%;
+    animation-duration: 20s;
+    animation-delay: 4s;
+}
+
+.login-particle:nth-child(4) {
+    width: 10px;
+    height: 10px;
+    left: 40%;
+    animation-duration: 16s;
+    animation-delay: 1s;
+}
+
+.login-particle:nth-child(5) {
+    width: 5px;
+    height: 5px;
+    left: 50%;
+    animation-duration: 22s;
+    animation-delay: 3s;
+}
+
+.login-particle:nth-child(6) {
+    width: 7px;
+    height: 7px;
+    left: 60%;
+    animation-duration: 19s;
+    animation-delay: 5s;
+}
+
+.login-particle:nth-child(7) {
+    width: 6px;
+    height: 6px;
+    left: 70%;
+    animation-duration: 17s;
+    animation-delay: 2s;
+}
+
+.login-particle:nth-child(8) {
+    width: 9px;
+    height: 9px;
+    left: 80%;
+    animation-duration: 21s;
+    animation-delay: 4s;
+}
+
+.login-particle:nth-child(9) {
+    width: 5px;
+    height: 5px;
+    left: 90%;
+    animation-duration: 18s;
+    animation-delay: 1s;
+}
+
+@keyframes login-particle-float {
+    0% {
+        transform: translateY(100vh) scale(0);
+        opacity: 0;
+    }
+    10% {
+        opacity: 0.5;
+    }
+    90% {
+        opacity: 0.5;
+    }
+    100% {
+        transform: translateY(-100px) scale(1);
+        opacity: 0;
+    }
+}
+
+/* ========================================
+   LOGIN CARD CONTAINER
+   ======================================== */
+.login-card-wrapper {
+    position: relative;
+    z-index: 10;
+}
+
+/* Login card - glassmorphism with floating animation */
+.login-page-container .ant-card {
+    position: relative;
+    background: rgba(255, 255, 255, 0.05) !important;
+    backdrop-filter: blur(20px) saturate(180%);
+    -webkit-backdrop-filter: blur(20px) saturate(180%);
+    border: 1px solid rgba(255, 255, 255, 0.1) !important;
+    border-radius: 24px !important;
+    overflow: visible !important;
+    animation: login-card-float 6s ease-in-out infinite;
+    box-shadow:
+        0 8px 32px rgba(0, 0, 0, 0.3),
+        0 0 0 1px rgba(255, 255, 255, 0.05) inset,
+        0 2px 4px rgba(255, 255, 255, 0.1) inset;
+    transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.login-page-container .ant-card:hover {
+    transform: translateY(-8px) scale(1.02);
+    box-shadow:
+        0 20px 60px rgba(79, 91, 255, 0.4),
+        0 0 0 1px rgba(255, 255, 255, 0.1) inset,
+        0 2px 8px rgba(255, 255, 255, 0.2) inset;
+    animation-play-state: paused;
+}
+
+@keyframes login-card-float {
+    0%,
+    100% {
+        transform: translateY(0px);
+    }
+    50% {
+        transform: translateY(-12px);
+    }
+}
+
+/* Card glow effect */
+.login-page-container .ant-card::before {
+    content: '';
+    position: absolute;
+    top: -2px;
+    left: -2px;
+    right: -2px;
+    bottom: -2px;
+    background: linear-gradient(
+        135deg,
+        rgba(79, 91, 255, 0.6),
+        rgba(99, 112, 255, 0.4),
+        rgba(139, 92, 246, 0.6)
+    );
+    border-radius: 24px;
+    opacity: 0;
+    filter: blur(10px);
+    z-index: -1;
+    transition: opacity 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.login-page-container .ant-card:hover::before {
+    opacity: 0.8;
+    animation: login-glow-pulse 2s ease-in-out infinite;
+}
+
+@keyframes login-glow-pulse {
+    0%,
+    100% {
+        opacity: 0.6;
+    }
+    50% {
+        opacity: 1;
+    }
+}
+
+/* ========================================
+   CARD HEADER
+   ======================================== */
+.login-page-container .ant-card-head {
+    background: transparent !important;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1) !important;
+    padding: 20px 24px !important;
+}
+
+.login-page-container .ant-card-head-title {
+    color: #ffffff !important;
+    font-size: 24px !important;
+    font-weight: 700 !important;
+    text-shadow: 0 2px 10px rgba(79, 91, 255, 0.5);
+    background: linear-gradient(135deg, #ffffff 0%, #a5b4fc 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+}
+
+/* ========================================
+   CARD BODY
+   ======================================== */
+.login-page-container .ant-card-body {
+    padding: 32px 24px 24px !important;
+}
+
+/* ========================================
+   FORM INPUTS
+   ======================================== */
+.login-page-container .ant-input,
+.login-page-container .ant-input-password {
+    background: rgba(255, 255, 255, 0.05) !important;
+    border: 1px solid rgba(255, 255, 255, 0.1) !important;
+    color: #ffffff !important;
+    border-radius: 12px !important;
+    padding: 12px 16px !important;
+    font-size: 14px !important;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.login-page-container .ant-input::placeholder,
+.login-page-container .ant-input-password input::placeholder {
+    color: rgba(255, 255, 255, 0.4) !important;
+}
+
+.login-page-container .ant-input:hover,
+.login-page-container .ant-input-password:hover {
+    border-color: rgba(79, 91, 255, 0.5) !important;
+    background: rgba(255, 255, 255, 0.08) !important;
+}
+
+.login-page-container .ant-input:focus,
+.login-page-container .ant-input-password:focus,
+.login-page-container .ant-input-password-focused {
+    border-color: rgba(79, 91, 255, 0.8) !important;
+    background: rgba(255, 255, 255, 0.1) !important;
+    box-shadow:
+        0 0 0 3px rgba(79, 91, 255, 0.15),
+        0 4px 12px rgba(79, 91, 255, 0.3);
+}
+
+/* Input prefix icon */
+.login-page-container .ant-input-prefix {
+    color: rgba(255, 255, 255, 0.5) !important;
+}
+
+/* Input password icon */
+.login-page-container .ant-input-password-icon {
+    color: rgba(255, 255, 255, 0.5) !important;
+    transition: color 0.2s ease;
+}
+
+.login-page-container .ant-input-password-icon:hover {
+    color: rgba(255, 255, 255, 0.8) !important;
+}
+
+/* OTP Input specific styling */
+.login-page-container .ant-input-group-addon {
+    background: rgba(79, 91, 255, 0.2) !important;
+    border: 1px solid rgba(255, 255, 255, 0.1) !important;
+    color: rgba(255, 255, 255, 0.9) !important;
+    border-radius: 12px 0 0 12px !important;
+    padding: 8px 16px !important;
+    font-size: 13px !important;
+    font-weight: 500 !important;
+}
+
+/* ========================================
+   BUTTONS
+   ======================================== */
+.login-page-container .ant-btn-primary {
+    background: linear-gradient(135deg, #4f5bff 0%, #6370ff 100%) !important;
+    border: none !important;
+    border-radius: 12px !important;
+    padding: 12px 32px !important;
+    height: auto !important;
+    font-size: 15px !important;
+    font-weight: 600 !important;
+    color: #ffffff !important;
+    box-shadow:
+        0 4px 12px rgba(79, 91, 255, 0.4),
+        0 2px 4px rgba(79, 91, 255, 0.3);
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    position: relative;
+    overflow: hidden;
+}
+
+.login-page-container .ant-btn-primary::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(
+        90deg,
+        transparent,
+        rgba(255, 255, 255, 0.2),
+        transparent
+    );
+    transition: left 0.5s ease;
+}
+
+.login-page-container .ant-btn-primary:hover {
+    transform: translateY(-2px) scale(1.05);
+    box-shadow:
+        0 8px 20px rgba(79, 91, 255, 0.6),
+        0 4px 8px rgba(79, 91, 255, 0.4);
+}
+
+.login-page-container .ant-btn-primary:hover::before {
+    left: 100%;
+}
+
+.login-page-container .ant-btn-primary:active {
+    transform: translateY(0px) scale(0.98);
+}
+
+/* ========================================
+   COLLAPSE (REMEMBER ME SECTION)
+   ======================================== */
+.login-page-container .ant-collapse {
+    background: transparent !important;
+    border: none !important;
+    border-radius: 12px !important;
+    overflow: hidden;
+}
+
+.login-page-container .ant-collapse-item {
+    background: rgba(255, 255, 255, 0.03) !important;
+    border: 1px solid rgba(255, 255, 255, 0.05) !important;
+    border-radius: 12px !important;
+    overflow: hidden;
+    margin-bottom: 0 !important;
+}
+
+.login-page-container .ant-collapse-header {
+    background: rgba(255, 255, 255, 0.05) !important;
+    color: rgba(255, 255, 255, 0.8) !important;
+    padding: 12px 16px !important;
+    font-size: 13px !important;
+    font-weight: 500 !important;
+    transition: all 0.3s ease;
+}
+
+.login-page-container .ant-collapse-header:hover {
+    background: rgba(255, 255, 255, 0.08) !important;
+    color: rgba(255, 255, 255, 0.95) !important;
+}
+
+.login-page-container .ant-collapse-content {
+    background: rgba(255, 255, 255, 0.02) !important;
+    border-top: 1px solid rgba(255, 255, 255, 0.05) !important;
+}
+
+.login-page-container .ant-collapse-content-box {
+    padding: 16px !important;
+}
+
+/* ========================================
+   RADIO GROUP
+   ======================================== */
+.login-page-container .ant-radio-wrapper {
+    color: rgba(255, 255, 255, 0.8) !important;
+    font-size: 13px !important;
+    transition: color 0.2s ease;
+}
+
+.login-page-container .ant-radio-wrapper:hover {
+    color: rgba(255, 255, 255, 0.95) !important;
+}
+
+.login-page-container .ant-radio-inner {
+    background: rgba(255, 255, 255, 0.05) !important;
+    border-color: rgba(255, 255, 255, 0.2) !important;
+    transition: all 0.3s ease;
+}
+
+.login-page-container .ant-radio-wrapper:hover .ant-radio-inner {
+    border-color: rgba(79, 91, 255, 0.6) !important;
+}
+
+.login-page-container .ant-radio-checked .ant-radio-inner {
+    border-color: #4f5bff !important;
+    background: #4f5bff !important;
+}
+
+.login-page-container .ant-radio-checked .ant-radio-inner::after {
+    background: #ffffff !important;
+}
+
+/* ========================================
+   LANGUAGE SELECTOR
+   ======================================== */
+.login-page-container .ant-select {
+    color: rgba(255, 255, 255, 0.9) !important;
+}
+
+.login-page-container .ant-select-selector {
+    background: rgba(255, 255, 255, 0.05) !important;
+    border: 1px solid rgba(255, 255, 255, 0.1) !important;
+    border-radius: 8px !important;
+    transition: all 0.3s ease;
+}
+
+.login-page-container .ant-select-selector:hover {
+    background: rgba(255, 255, 255, 0.08) !important;
+    border-color: rgba(79, 91, 255, 0.5) !important;
+}
+
+.login-page-container .ant-select-selection-item {
+    color: rgba(255, 255, 255, 0.9) !important;
+}
+
+.login-page-container .ant-select-arrow {
+    color: rgba(255, 255, 255, 0.5) !important;
+}
+
+/* ========================================
+   RESPONSIVE DESIGN
+   ======================================== */
+@media (max-width: 576px) {
+    .login-page-container .ant-card {
+        width: calc(100% - 32px) !important;
+        margin: 0 16px;
+        border-radius: 20px !important;
+    }
+
+    .login-page-container .ant-card-head-title {
+        font-size: 20px !important;
+    }
+
+    .login-page-container .ant-card-body {
+        padding: 24px 16px 16px !important;
+    }
+}
+
+/* ========================================
+   ACCESSIBILITY
+   ======================================== */
+@media (prefers-reduced-motion: reduce) {
+    .login-page-container::before,
+    .login-page-container .ant-card,
+    .login-particle {
+        animation: none !important;
+    }
+
+    .login-page-container .ant-card:hover {
+        transform: none;
+    }
+
+    .login-page-container .ant-btn-primary:hover {
+        transform: none;
+    }
+}

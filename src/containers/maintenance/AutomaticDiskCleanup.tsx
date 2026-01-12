@@ -83,7 +83,7 @@ export default class AutomaticDiskCleanup extends ApiComponent<
                     <p>
                         {localize(
                             'automatic_disk_cleanup.by_default_caprover',
-                            'By default, CapRover keeps a few most recent images for your app so that you can rollback to a previous version if needed. Also, CapRover uses a simple crontab scheduler, for example,'
+                            'By default, Railover keeps a few most recent images for your app so that you can rollback to a previous version if needed. Also, Railover uses a simple crontab scheduler, for example,'
                         )}{' '}
                         <code
                             onClick={(e) => {

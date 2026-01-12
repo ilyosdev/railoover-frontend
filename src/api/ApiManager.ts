@@ -9,7 +9,7 @@ const URL = BASE_DOMAIN
 Logger.dev(`API URL: ${URL}`)
 
 const authProvider = {
-    authToken: '' as string,
+    authToken: StorageHelper.getAuthKeyFromStorage() || '',
     hadEnteredOtp: false as boolean,
     lastKnownPassword: '' as string,
     onAuthTokenRequested: () => {
@@ -20,6 +20,9 @@ const authProvider = {
     },
     onAuthTokenUpdated: (authToken: string) => {
         authProvider.authToken = authToken
+        if (authToken) {
+            StorageHelper.setAuthKeyInLocalStorage(authToken)
+        }
     },
 }
 
@@ -53,11 +56,15 @@ export default class ApiManager extends CapRoverAPI {
         return !!authProvider.authToken
     }
 
-    loginAndSavePassword(password: string, otpToken?: string) {
+    loginAndSavePassword(
+        username: string,
+        password: string,
+        otpToken?: string
+    ) {
         authProvider.hadEnteredOtp = !!otpToken
         authProvider.lastKnownPassword = password
 
-        return this.login(password, otpToken) //
+        return this.loginWithUsername(username, password, otpToken)
             .then(() => {
                 return authProvider.authToken
             })
@@ -66,6 +73,32 @@ export default class ApiManager extends CapRoverAPI {
                 authProvider.lastKnownPassword = ''
 
                 return Promise.reject(error)
+            })
+    }
+
+    loginWithUsername(username: string, password: string, otpToken?: string) {
+        const self = this
+        return fetch(`${URL}/api/v2/login`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({
+                username: username || undefined,
+                password,
+                otpToken: otpToken || undefined,
+            }),
+        })
+            .then((res) => res.json())
+            .then((data) => {
+                if (data.status === 100 && data.data?.token) {
+                    authProvider.authToken = data.data.token
+                    StorageHelper.setAuthKeyInLocalStorage(data.data.token)
+                    return data
+                }
+                const error: any = new Error(data.description || 'Login failed')
+                error.captainStatus = data.status
+                throw error
             })
     }
 }

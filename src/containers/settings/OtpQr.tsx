@@ -48,7 +48,7 @@ export default class OtpQr extends Component<
                             margin: 10,
                         }}
                     >
-                        Scan the code using an Authenticator app. CapRover
+                        Scan the code using an Authenticator app. Railover
                         recommends{' '}
                         <NewTabLink url="https://authy.com/download/">
                             <b>Authy</b>

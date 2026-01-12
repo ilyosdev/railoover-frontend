@@ -19,10 +19,11 @@ class ServiceCard extends Component<ServiceCardProps> {
         const status = service.isAppBuilding ? 'deploying' : 'running'
         const statusColor = status === 'running' ? '#10b981' : '#f59e0b'
 
-        const lastDeployed =
-            service.versions && service.versions.length > 0
-                ? service.versions[0].timeStamp
-                : null
+        const deployedVersion = service.deployedVersion || 0
+        const versionInfo = service.versions?.find(
+            (v) => v.version === deployedVersion
+        )
+        const lastDeployed = versionInfo?.timeStamp || null
 
         const handleClick = () => {
             if (onServiceClick) {

@@ -80,7 +80,7 @@ export default class NginxConfig extends ApiComponent<
                 <p>
                     {localize(
                         'nginx_config.customization',
-                        'CapRover allows you to set custom configurations for your nginx router. This will allow high customization level in terms of caching, special routing, http2 and etc.'
+                        'Railover allows you to set custom configurations for your nginx router. This will allow high customization level in terms of caching, special routing, http2 and etc.'
                     )}
                 </p>
                 <p>
@@ -124,7 +124,7 @@ export default class NginxConfig extends ApiComponent<
                     <b>
                         {localize(
                             'nginx_config.captain_config_location',
-                            'CapRover Config Location in nginx container'
+                            'Railover Config Location in nginx container'
                         )}
                         :
                     </b>{' '}

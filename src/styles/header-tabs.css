@@ -1,0 +1,368 @@
+/* ========================================
+   MODERN HEADER & TABS
+   ======================================== */
+
+/* ========================================
+   HEADER STYLING
+   ======================================== */
+.ant-layout-header.header {
+    background: linear-gradient(
+        135deg,
+        rgba(22, 23, 41, 0.98) 0%,
+        rgba(30, 31, 50, 0.98) 100%
+    ) !important;
+    backdrop-filter: blur(20px) !important;
+    -webkit-backdrop-filter: blur(20px) !important;
+    border-bottom: 1px solid rgba(79, 91, 255, 0.2) !important;
+    box-shadow: 0 4px 24px rgba(0, 0, 0, 0.2);
+    height: 64px !important;
+    line-height: 64px !important;
+    position: sticky;
+    top: 0;
+    z-index: 100;
+}
+
+.header-logo-container {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.header-logo {
+    width: 36px !important;
+    height: 36px !important;
+    border-radius: 8px !important;
+    box-shadow: 0 2px 8px rgba(79, 91, 255, 0.3);
+    transition: all 0.3s ease;
+}
+
+.header-logo:hover {
+    transform: scale(1.05);
+    box-shadow: 0 4px 16px rgba(79, 91, 255, 0.5);
+}
+
+.header-title {
+    font-size: 20px !important;
+    font-weight: 700 !important;
+    margin: 0 !important;
+    background: linear-gradient(135deg, #ffffff 0%, #a5b4fc 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    letter-spacing: -0.5px;
+}
+
+.header .ant-btn-ghost {
+    border-color: rgba(255, 255, 255, 0.2) !important;
+    color: rgba(255, 255, 255, 0.9) !important;
+    border-radius: 10px !important;
+    transition: all 0.3s ease;
+}
+
+.header .ant-btn-ghost:hover {
+    border-color: rgba(79, 91, 255, 0.5) !important;
+    background: rgba(79, 91, 255, 0.1) !important;
+    color: #ffffff !important;
+    transform: translateY(-1px);
+}
+
+/* ========================================
+   PROJECT HEADER
+   ======================================== */
+.project-header {
+    margin-bottom: 32px;
+    padding: 24px 0;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.project-header h1 {
+    font-size: 32px !important;
+    font-weight: 700 !important;
+    margin: 0 0 8px 0 !important;
+    background: linear-gradient(135deg, #ffffff 0%, #a5b4fc 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    letter-spacing: -1px;
+}
+
+.project-header p {
+    color: rgba(255, 255, 255, 0.6) !important;
+    font-size: 15px !important;
+    margin: 0 !important;
+    line-height: 1.5 !important;
+}
+
+/* ========================================
+   MODERN TABS
+   ======================================== */
+.ant-tabs {
+    color: rgba(255, 255, 255, 0.85) !important;
+}
+
+.ant-tabs-nav {
+    margin-bottom: 24px !important;
+}
+
+.ant-tabs-nav::before {
+    border-bottom: 1px solid rgba(255, 255, 255, 0.05) !important;
+}
+
+.ant-tabs-nav-wrap {
+    padding: 0 !important;
+}
+
+.ant-tabs-tab {
+    padding: 12px 20px !important;
+    margin: 0 4px !important;
+    border-radius: 10px 10px 0 0 !important;
+    color: rgba(255, 255, 255, 0.6) !important;
+    font-weight: 500 !important;
+    font-size: 14px !important;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1) !important;
+    position: relative;
+    overflow: visible;
+}
+
+.ant-tabs-tab:hover {
+    color: rgba(255, 255, 255, 0.9) !important;
+    background: rgba(79, 91, 255, 0.08) !important;
+}
+
+.ant-tabs-tab-active {
+    background: rgba(79, 91, 255, 0.15) !important;
+}
+
+.ant-tabs-tab-active .ant-tabs-tab-btn {
+    color: #ffffff !important;
+    text-shadow: 0 0 8px rgba(79, 91, 255, 0.5);
+}
+
+.ant-tabs-ink-bar {
+    height: 3px !important;
+    background: linear-gradient(90deg, #4f5bff 0%, #6370ff 100%) !important;
+    border-radius: 3px 3px 0 0 !important;
+    box-shadow: 0 -2px 8px rgba(79, 91, 255, 0.5);
+}
+
+.ant-tabs-tab + .ant-tabs-tab {
+    margin-left: 8px !important;
+}
+
+.ant-tabs-content {
+    color: rgba(255, 255, 255, 0.85) !important;
+}
+
+/* ========================================
+   ADD SERVICE BUTTON (PROJECT HEADER)
+   ======================================== */
+.add-service-button {
+    background: linear-gradient(135deg, #4f5bff 0%, #6370ff 100%) !important;
+    border: none !important;
+    border-radius: 12px !important;
+    padding: 12px 24px !important;
+    height: auto !important;
+    font-size: 15px !important;
+    font-weight: 600 !important;
+    color: #ffffff !important;
+    box-shadow:
+        0 4px 12px rgba(79, 91, 255, 0.4),
+        0 2px 4px rgba(79, 91, 255, 0.3);
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    position: relative;
+    overflow: hidden;
+}
+
+.add-service-button::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(
+        90deg,
+        transparent,
+        rgba(255, 255, 255, 0.2),
+        transparent
+    );
+    transition: left 0.5s ease;
+}
+
+.add-service-button:hover:not(:disabled) {
+    transform: translateY(-2px) scale(1.02);
+    box-shadow:
+        0 8px 20px rgba(79, 91, 255, 0.6),
+        0 4px 8px rgba(79, 91, 255, 0.4);
+}
+
+.add-service-button:hover::before {
+    left: 100%;
+}
+
+.add-service-button:active {
+    transform: translateY(0px) scale(0.98);
+}
+
+/* ========================================
+   TABS EXTRA CONTENT
+   ======================================== */
+.ant-tabs-extra-content {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+/* ========================================
+   SEGMENTED CONTROL (VIEW SWITCHER)
+   ======================================== */
+.ant-segmented {
+    background: rgba(255, 255, 255, 0.05) !important;
+    padding: 4px !important;
+    border-radius: 10px !important;
+    border: 1px solid rgba(255, 255, 255, 0.1) !important;
+}
+
+.ant-segmented-item {
+    color: rgba(255, 255, 255, 0.6) !important;
+    font-weight: 500 !important;
+    transition: all 0.3s ease;
+    border-radius: 8px !important;
+}
+
+.ant-segmented-item:hover {
+    color: rgba(255, 255, 255, 0.9) !important;
+}
+
+.ant-segmented-item-selected {
+    background: linear-gradient(135deg, #4f5bff 0%, #6370ff 100%) !important;
+    color: #ffffff !important;
+    box-shadow: 0 2px 8px rgba(79, 91, 255, 0.4);
+}
+
+.ant-segmented-item-label {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    padding: 6px 12px !important;
+}
+
+.ant-segmented-thumb {
+    background: linear-gradient(135deg, #4f5bff 0%, #6370ff 100%) !important;
+    border-radius: 8px !important;
+    box-shadow: 0 2px 8px rgba(79, 91, 255, 0.4);
+}
+
+/* ========================================
+   PROJECT DASHBOARD CONTAINER
+   ======================================== */
+.project-dashboard-container {
+    padding: 0 20px;
+    margin: 0 auto 50px;
+    max-width: 1600px;
+}
+
+/* ========================================
+   RESPONSIVE DESIGN
+   ======================================== */
+@media (max-width: 992px) {
+    .header-title {
+        font-size: 18px !important;
+    }
+
+    .header-logo {
+        width: 32px !important;
+        height: 32px !important;
+    }
+
+    .project-header h1 {
+        font-size: 28px !important;
+    }
+
+    .ant-tabs-tab {
+        padding: 10px 16px !important;
+        font-size: 13px !important;
+    }
+}
+
+@media (max-width: 576px) {
+    .ant-layout-header.header {
+        height: 56px !important;
+        line-height: 56px !important;
+    }
+
+    .header-title {
+        font-size: 16px !important;
+    }
+
+    .header-logo {
+        width: 28px !important;
+        height: 28px !important;
+    }
+
+    .project-header {
+        padding: 16px 0;
+        margin-bottom: 24px;
+    }
+
+    .project-header h1 {
+        font-size: 24px !important;
+    }
+
+    .project-header p {
+        font-size: 14px !important;
+    }
+
+    .ant-tabs-tab {
+        padding: 8px 12px !important;
+        margin: 0 2px !important;
+        font-size: 12px !important;
+    }
+
+    .ant-tabs-tab + .ant-tabs-tab {
+        margin-left: 4px !important;
+    }
+
+    .add-service-button {
+        padding: 10px 20px !important;
+        font-size: 14px !important;
+    }
+
+    .project-dashboard-container {
+        padding: 0 12px;
+    }
+}
+
+/* ========================================
+   ACCESSIBILITY
+   ======================================== */
+@media (prefers-reduced-motion: reduce) {
+    .header-logo,
+    .ant-tabs-tab,
+    .add-service-button {
+        transition: none !important;
+    }
+
+    .header-logo:hover,
+    .ant-tabs-tab:hover,
+    .add-service-button:hover {
+        transform: none !important;
+    }
+
+    .add-service-button::before {
+        display: none;
+    }
+}
+
+/* ========================================
+   DARK MODE COMPATIBILITY
+   ======================================== */
+.ant-layout-header.header .ant-row {
+    height: 100%;
+    align-items: center;
+}
+
+.ant-layout-header.header .ant-col {
+    display: flex;
+    align-items: center;
+}

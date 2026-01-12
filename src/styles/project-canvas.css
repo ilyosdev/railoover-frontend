@@ -1,0 +1,512 @@
+.project-canvas-container {
+    width: 100%;
+    height: 600px;
+    border-radius: 16px;
+    overflow: hidden;
+    border: 1px solid rgba(255, 255, 255, 0.05);
+    background: linear-gradient(
+        135deg,
+        rgba(10, 10, 10, 0.95) 0%,
+        rgba(26, 26, 26, 0.95) 100%
+    );
+    backdrop-filter: blur(20px);
+    box-shadow:
+        0 8px 32px rgba(0, 0, 0, 0.4),
+        inset 0 1px 0 rgba(255, 255, 255, 0.05);
+    position: relative;
+}
+
+.project-canvas-container .react-flow__renderer {
+    background: var(--railway-bg-primary);
+}
+
+.project-canvas-container .react-flow__background {
+    background: var(--railway-bg-primary);
+}
+
+.canvas-panel {
+    z-index: 10 !important;
+}
+
+.canvas-panel > div {
+    background: linear-gradient(
+        135deg,
+        rgba(26, 26, 26, 0.95) 0%,
+        rgba(42, 42, 42, 0.9) 100%
+    ) !important;
+    border: 1px solid rgba(255, 255, 255, 0.1) !important;
+    border-radius: 12px !important;
+    padding: 12px !important;
+    box-shadow:
+        0 8px 32px rgba(0, 0, 0, 0.5),
+        inset 0 1px 0 rgba(255, 255, 255, 0.05) !important;
+    backdrop-filter: blur(16px) !important;
+}
+
+.canvas-panel button {
+    background: linear-gradient(135deg, #4f5bff 0%, #6370ff 100%) !important;
+    border: none !important;
+    color: white !important;
+    font-weight: 600 !important;
+    border-radius: 10px !important;
+    padding: 8px 16px !important;
+    height: auto !important;
+    box-shadow:
+        0 4px 16px rgba(79, 91, 255, 0.4),
+        inset 0 1px 0 rgba(255, 255, 255, 0.2) !important;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1) !important;
+}
+
+.canvas-panel button:hover {
+    background: linear-gradient(135deg, #6370ff 0%, #8b5cf6 100%) !important;
+    transform: translateY(-2px) !important;
+    box-shadow:
+        0 8px 24px rgba(79, 91, 255, 0.6),
+        inset 0 1px 0 rgba(255, 255, 255, 0.3) !important;
+}
+
+.canvas-panel button:active {
+    transform: translateY(0) !important;
+}
+
+.canvas-panel .ant-btn-icon-only {
+    background: transparent !important;
+    border: 1px solid rgba(255, 255, 255, 0.1) !important;
+    box-shadow: none !important;
+    color: rgba(255, 255, 255, 0.7) !important;
+}
+
+.canvas-panel .ant-btn-icon-only:hover {
+    background: rgba(79, 91, 255, 0.2) !important;
+    border-color: rgba(79, 91, 255, 0.4) !important;
+    color: white !important;
+    box-shadow: 0 0 16px rgba(79, 91, 255, 0.3) !important;
+}
+
+.service-node {
+    background: linear-gradient(
+        135deg,
+        rgba(26, 26, 26, 0.9) 0%,
+        rgba(42, 42, 42, 0.8) 100%
+    );
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    border-radius: 16px;
+    padding: 20px;
+    min-width: 240px;
+    max-width: 280px;
+    cursor: pointer;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    position: relative;
+    box-shadow:
+        0 8px 32px rgba(0, 0, 0, 0.5),
+        inset 0 1px 0 rgba(255, 255, 255, 0.05);
+    backdrop-filter: blur(12px);
+    overflow: hidden;
+}
+
+.service-node::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 2px;
+    background: linear-gradient(90deg, transparent, currentColor, transparent);
+    opacity: 0;
+    transition: opacity 0.3s ease;
+}
+
+.service-node:hover::before {
+    opacity: 1;
+}
+
+.service-node:hover {
+    transform: translateY(-4px) scale(1.02);
+    box-shadow:
+        0 16px 48px rgba(0, 0, 0, 0.6),
+        0 0 0 1px rgba(255, 255, 255, 0.12),
+        0 0 32px rgba(79, 91, 255, 0.2);
+    border-color: rgba(79, 91, 255, 0.4);
+}
+
+.service-node-handle {
+    width: 12px !important;
+    height: 12px !important;
+    background: linear-gradient(135deg, #4f5bff 0%, #6370ff 100%) !important;
+    border: 2px solid rgba(0, 0, 0, 0.3) !important;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    box-shadow: 0 0 12px rgba(79, 91, 255, 0.4);
+}
+
+.service-node-handle:hover {
+    background: linear-gradient(135deg, #6370ff 0%, #8b5cf6 100%) !important;
+    transform: scale(1.4);
+    box-shadow: 0 0 20px rgba(79, 91, 255, 0.8);
+}
+
+.service-node-status {
+    position: absolute;
+    top: 16px;
+    right: 16px;
+    width: 12px;
+    height: 12px;
+    border-radius: 50%;
+    box-shadow:
+        0 0 12px currentColor,
+        0 0 24px currentColor,
+        inset 0 0 8px rgba(255, 255, 255, 0.3);
+    animation: pulse-glow 2s ease-in-out infinite;
+}
+
+@keyframes pulse-glow {
+    0%,
+    100% {
+        opacity: 1;
+        transform: scale(1);
+    }
+    50% {
+        opacity: 0.7;
+        transform: scale(1.1);
+    }
+}
+
+.service-node-icon {
+    font-size: 40px;
+    margin-bottom: 16px;
+    line-height: 1;
+    filter: drop-shadow(0 4px 8px rgba(0, 0, 0, 0.4));
+    transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.service-node:hover .service-node-icon {
+    transform: scale(1.1) rotate(5deg);
+}
+
+.service-node-info {
+    margin-bottom: 12px;
+}
+
+.service-node-name {
+    font-size: 16px;
+    font-weight: 700;
+    color: #ffffff;
+    margin-bottom: 6px;
+    word-break: break-word;
+    text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+    letter-spacing: -0.2px;
+}
+
+.service-node-type {
+    font-size: 11px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    padding: 4px 10px;
+    border-radius: 12px;
+    background: rgba(255, 255, 255, 0.05);
+    backdrop-filter: blur(8px);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    display: inline-block;
+    transition: all 0.2s ease;
+}
+
+.service-node:hover .service-node-type {
+    background: rgba(255, 255, 255, 0.1);
+    border-color: currentColor;
+    box-shadow: 0 0 16px currentColor;
+}
+
+.service-node-deployed {
+    font-size: 11px;
+    color: var(--railway-text-muted);
+    margin-top: 4px;
+}
+
+.service-node-actions {
+    display: flex;
+    gap: 6px;
+    padding-top: 16px;
+    margin-top: 16px;
+    border-top: 1px solid rgba(255, 255, 255, 0.05);
+    justify-content: flex-end;
+    opacity: 0.6;
+    transition: opacity 0.3s ease;
+}
+
+.service-node:hover .service-node-actions {
+    opacity: 1;
+}
+
+.service-node-actions .ant-btn {
+    color: rgba(255, 255, 255, 0.6);
+    padding: 4px 8px;
+    background: rgba(255, 255, 255, 0.03);
+    border: 1px solid rgba(255, 255, 255, 0.05);
+    border-radius: 6px;
+    transition: all 0.2s ease;
+}
+
+.service-node-actions .ant-btn:hover {
+    color: #ffffff;
+    background: rgba(79, 91, 255, 0.2);
+    border-color: rgba(79, 91, 255, 0.4);
+    box-shadow: 0 0 12px rgba(79, 91, 255, 0.3);
+    transform: translateY(-1px);
+}
+
+.service-node-actions .ant-btn:active {
+    transform: translateY(0);
+}
+
+.canvas-controls {
+    background: linear-gradient(
+        135deg,
+        rgba(26, 26, 26, 0.95) 0%,
+        rgba(42, 42, 42, 0.9) 100%
+    ) !important;
+    border: 1px solid rgba(255, 255, 255, 0.1) !important;
+    border-radius: 12px !important;
+    box-shadow:
+        0 8px 32px rgba(0, 0, 0, 0.5),
+        inset 0 1px 0 rgba(255, 255, 255, 0.05) !important;
+    backdrop-filter: blur(16px) !important;
+    overflow: hidden !important;
+}
+
+.canvas-controls button {
+    background: transparent !important;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.05) !important;
+    color: rgba(255, 255, 255, 0.6) !important;
+    width: 36px !important;
+    height: 36px !important;
+    transition: all 0.2s ease !important;
+    position: relative !important;
+}
+
+.canvas-controls button::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(135deg, #4f5bff, #8b5cf6);
+    opacity: 0;
+    transition: opacity 0.2s ease;
+}
+
+.canvas-controls button:hover {
+    background: rgba(79, 91, 255, 0.1) !important;
+    color: #ffffff !important;
+    box-shadow: inset 0 0 16px rgba(79, 91, 255, 0.2) !important;
+}
+
+.canvas-controls button:hover::before {
+    opacity: 0.1;
+}
+
+.canvas-controls button:last-child {
+    border-bottom: none !important;
+}
+
+.canvas-controls button svg {
+    fill: currentColor !important;
+}
+
+.canvas-minimap {
+    background: linear-gradient(
+        135deg,
+        rgba(26, 26, 26, 0.95) 0%,
+        rgba(42, 42, 42, 0.9) 100%
+    ) !important;
+    border: 1px solid rgba(255, 255, 255, 0.1) !important;
+    border-radius: 12px !important;
+    box-shadow:
+        0 8px 32px rgba(0, 0, 0, 0.5),
+        inset 0 1px 0 rgba(255, 255, 255, 0.05) !important;
+    backdrop-filter: blur(16px) !important;
+    overflow: hidden !important;
+}
+
+.canvas-minimap .react-flow__minimap-mask {
+    fill: rgba(0, 0, 0, 0.8) !important;
+}
+
+.canvas-minimap .react-flow__minimap-node {
+    filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.3));
+}
+
+.react-flow__edge-path {
+    stroke-width: 3 !important;
+    filter: drop-shadow(0 0 8px currentColor);
+    transition: all 0.3s ease !important;
+}
+
+.react-flow__edge:hover .react-flow__edge-path {
+    stroke-width: 4 !important;
+    filter: drop-shadow(0 0 16px currentColor);
+}
+
+.react-flow__edge.animated path {
+    stroke-dasharray: 8 4 !important;
+    animation: dashdraw 1s linear infinite !important;
+}
+
+@keyframes dashdraw {
+    from {
+        stroke-dashoffset: 20;
+    }
+    to {
+        stroke-dashoffset: 0;
+    }
+}
+
+.react-flow__edge-path {
+    opacity: 0.8;
+}
+
+.react-flow__edge:hover .react-flow__edge-path {
+    opacity: 1;
+}
+
+.react-flow__attribution {
+    display: none !important;
+}
+
+.canvas-view-toggle {
+    display: flex;
+    gap: 8px;
+    margin-bottom: 16px;
+}
+
+.canvas-view-toggle .ant-btn {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+}
+
+.canvas-view-toggle .ant-btn.active {
+    background: var(--railway-primary);
+    border-color: var(--railway-primary);
+    color: white;
+}
+
+.canvas-empty-state {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    height: 100%;
+    color: var(--railway-text-muted);
+    text-align: center;
+    padding: 40px;
+}
+
+.canvas-empty-state-icon {
+    font-size: 48px;
+    margin-bottom: 16px;
+    opacity: 0.5;
+}
+
+.canvas-empty-state h3 {
+    margin: 0 0 8px;
+    font-size: 18px;
+    color: var(--railway-text-secondary);
+}
+
+.canvas-empty-state p {
+    margin: 0;
+    font-size: 14px;
+    max-width: 300px;
+}
+
+/* ===== Floating Animation ===== */
+@keyframes float {
+    0%,
+    100% {
+        transform: translateY(0px);
+    }
+    50% {
+        transform: translateY(-6px);
+    }
+}
+
+.service-node {
+    animation: float 6s ease-in-out infinite;
+}
+
+.service-node:nth-child(2n) {
+    animation-delay: -2s;
+}
+
+.service-node:nth-child(3n) {
+    animation-delay: -4s;
+}
+
+/* ===== Shimmer Effect ===== */
+@keyframes shimmer {
+    0% {
+        background-position: -1000px 0;
+    }
+    100% {
+        background-position: 1000px 0;
+    }
+}
+
+.service-node::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(
+        90deg,
+        transparent 0%,
+        rgba(255, 255, 255, 0.03) 50%,
+        transparent 100%
+    );
+    background-size: 1000px 100%;
+    animation: shimmer 8s infinite;
+    pointer-events: none;
+    border-radius: inherit;
+}
+
+.service-node:hover {
+    animation-play-state: paused;
+}
+
+@media (max-width: 768px) {
+    .project-canvas-container {
+        height: 400px;
+    }
+
+    .service-node {
+        min-width: 180px;
+        padding: 12px;
+        animation: none;
+    }
+
+    .service-node-icon {
+        font-size: 24px;
+    }
+
+    .service-node-name {
+        font-size: 13px;
+    }
+}
+
+/* ===== Background Grid Effect ===== */
+.react-flow__background {
+    background-image:
+        radial-gradient(
+            circle at 1px 1px,
+            rgba(255, 255, 255, 0.02) 1px,
+            transparent 0
+        ),
+        linear-gradient(
+            135deg,
+            rgba(79, 91, 255, 0.02) 0%,
+            rgba(139, 92, 246, 0.02) 100%
+        );
+    background-size:
+        40px 40px,
+        100% 100%;
+}

@@ -8,6 +8,7 @@ import ErrorRetry from '../global/ErrorRetry'
 import { IAppDef } from './AppDefinition'
 import AppsTable from './AppsTable'
 import CreateNewApp from './CreateNewApp'
+import '../../styles/apps.css'
 
 export default class Apps extends ApiComponent<
     RouteComponentProps<any>,
@@ -82,7 +83,7 @@ export default class Apps extends ApiComponent<
             self.state.showCreateAppForm || !showAppsTable
 
         return (
-            <div className="slow-fadein-fast">
+            <div className="slow-fadein-fast apps-container">
                 {showCreateAppForm && (
                     <div
                         style={{

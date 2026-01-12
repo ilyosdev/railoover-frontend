@@ -7,6 +7,7 @@ import Toaster from '../../utils/Toaster'
 import ApiComponent from '../global/ApiComponent'
 import CenteredSpinner from '../global/CenteredSpinner'
 import EnvVarTable from './EnvVarTable'
+import ReferenceVariableInput from './ReferenceVariableInput'
 
 interface ProjectEnvironmentProps {
     projectId: string
@@ -268,16 +269,19 @@ class ProjectEnvironment extends ApiComponent<
                         <Form.Item
                             label={localize('project_env.value', 'Value')}
                             required
+                            extra={localize(
+                                'project_env.value_hint',
+                                'Type ${{ to reference variables from other services'
+                            )}
                         >
-                            <Input.TextArea
-                                placeholder="postgresql://..."
-                                rows={3}
+                            <ReferenceVariableInput
                                 value={self.state.newVarValue}
-                                onChange={(e) =>
-                                    self.setState({
-                                        newVarValue: e.target.value,
-                                    })
+                                onChange={(val) =>
+                                    self.setState({ newVarValue: val })
                                 }
+                                projectId={self.props.projectId}
+                                apiManager={self.apiManager}
+                                placeholder="postgresql://... or ${{postgres.DATABASE_URL}}"
                             />
                         </Form.Item>
                     </Form>

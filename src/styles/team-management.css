@@ -1,0 +1,66 @@
+.team-management-container {
+    padding: 24px;
+    max-width: 1400px;
+    margin: 0 auto;
+}
+
+.team-management-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    margin-bottom: 24px;
+}
+
+.team-management-header h1 {
+    margin-bottom: 8px;
+    font-size: 24px;
+    font-weight: 600;
+}
+
+.team-management-header p {
+    color: rgba(0, 0, 0, 0.45);
+    margin-bottom: 0;
+}
+
+.team-management-container .ant-card {
+    border-radius: 8px;
+    box-shadow:
+        0 1px 2px 0 rgba(0, 0, 0, 0.03),
+        0 1px 6px -1px rgba(0, 0, 0, 0.02),
+        0 2px 4px 0 rgba(0, 0, 0, 0.02);
+}
+
+.team-management-container .ant-table {
+    margin-top: 16px;
+}
+
+.project-collaborators-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    margin-bottom: 24px;
+}
+
+.project-collaborators-header h2 {
+    margin-bottom: 8px;
+    font-size: 20px;
+    font-weight: 600;
+}
+
+.project-collaborators-header p {
+    color: rgba(0, 0, 0, 0.45);
+    margin-bottom: 0;
+}
+
+@media (max-width: 768px) {
+    .team-management-header,
+    .project-collaborators-header {
+        flex-direction: column;
+        gap: 16px;
+    }
+
+    .team-management-header button,
+    .project-collaborators-header button {
+        width: 100%;
+    }
+}

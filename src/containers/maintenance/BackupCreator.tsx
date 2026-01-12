@@ -60,7 +60,7 @@ export default class BackupCreator extends ApiComponent<
                 <p>
                     {localize(
                         'backup.create_backup_info',
-                        'Create a backup of CapRover configs in order to be able to spin up a clone of this server. Note that your application data (volumes, and images) are not part of this backup. This backup only includes the server configuration details, such as root domains, app names, SSL certs and etc.'
+                        'Create a backup of Railover configs in order to be able to spin up a clone of this server. Note that your application data (volumes, and images) are not part of this backup. This backup only includes the server configuration details, such as root domains, app names, SSL certs and etc.'
                     )}
                 </p>
                 <p>

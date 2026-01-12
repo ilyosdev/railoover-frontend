@@ -16,6 +16,7 @@ import {
     Spin,
     Tooltip,
     Select,
+    Progress,
 } from 'antd'
 import {
     CloseOutlined,
@@ -63,6 +64,15 @@ interface ServiceDetailDrawerProps {
     captainSubDomain?: string
 }
 
+interface ContainerStats {
+    cpuPercent: number
+    memoryUsageMB: number
+    memoryLimitMB: number
+    memoryPercent: number
+    networkRxMB: number
+    networkTxMB: number
+}
+
 interface ServiceDetailDrawerState {
     activeTab: string
     appLogs: string
@@ -94,6 +104,8 @@ interface ServiceDetailDrawerState {
     isDeleting: boolean
     githubConnected: boolean
     githubConfigured: boolean
+    containerStats: ContainerStats | null
+    isLoadingStats: boolean
     githubRepos: Array<{
         id: number
         name: string
@@ -118,6 +130,7 @@ export default class ServiceDetailDrawer extends Component<
     ServiceDetailDrawerState
 > {
     private logFetchInterval: NodeJS.Timeout | null = null
+    private statsFetchInterval: NodeJS.Timeout | null = null
     private willUnmountSoon = false
 
     constructor(props: ServiceDetailDrawerProps) {
@@ -153,6 +166,8 @@ export default class ServiceDetailDrawer extends Component<
             isDeleting: false,
             githubConnected: false,
             githubConfigured: false,
+            containerStats: null,
+            isLoadingStats: false,
             githubRepos: [],
             selectedGithubRepo: '',
             selectedGithubBranch: '',
@@ -181,6 +196,7 @@ export default class ServiceDetailDrawer extends Component<
                 editedWebsocketSupport:
                     this.props.service.websocketSupport || false,
                 appLogs: '',
+                containerStats: null,
                 gitRepo: repoInfo?.repo || '',
                 gitBranch: repoInfo?.branch || '',
                 gitUser: repoInfo?.user || '',
@@ -188,10 +204,12 @@ export default class ServiceDetailDrawer extends Component<
                 gitSshKey: repoInfo?.sshKey || '',
             })
             this.checkGitHubStatus()
+            this.startStatsFetching()
         }
 
         if (prevProps.visible && !this.props.visible) {
             this.stopLogFetching()
+            this.stopStatsFetching()
         }
     }
 
@@ -457,6 +475,7 @@ export default class ServiceDetailDrawer extends Component<
     componentWillUnmount() {
         this.willUnmountSoon = true
         this.stopLogFetching()
+        this.stopStatsFetching()
     }
 
     startLogFetching() {
@@ -470,6 +489,49 @@ export default class ServiceDetailDrawer extends Component<
             clearTimeout(this.logFetchInterval)
             this.logFetchInterval = null
         }
+    }
+
+    startStatsFetching() {
+        if (this.statsFetchInterval) return
+        this.fetchStats()
+        this.statsFetchInterval = setInterval(() => this.fetchStats(), 10000)
+    }
+
+    stopStatsFetching() {
+        if (this.statsFetchInterval) {
+            clearInterval(this.statsFetchInterval)
+            this.statsFetchInterval = null
+        }
+    }
+
+    fetchStats() {
+        const self = this
+        const { service, apiManager } = this.props
+
+        if (!service || !service.appName) return
+
+        self.setState({ isLoadingStats: true })
+
+        apiManager
+            .executeGenericApiCommand('GET', '/user/system/stats/', {})
+            .then((res: any) => {
+                if (self.willUnmountSoon) return
+
+                const allStats = res.stats || []
+                const serviceName = `srv-captain--${service.appName}`
+                const serviceStats = allStats.find(
+                    (s: any) => s.serviceName === serviceName
+                )
+
+                self.setState({
+                    containerStats: serviceStats || null,
+                    isLoadingStats: false,
+                })
+            })
+            .catch(() => {
+                if (self.willUnmountSoon) return
+                self.setState({ isLoadingStats: false })
+            })
     }
 
     fetchLogs() {
@@ -536,8 +598,17 @@ export default class ServiceDetailDrawer extends Component<
         return filteredLines.join('\n')
     }
 
-    detectServiceType(appName: string): string {
-        const name = appName.toLowerCase()
+    detectServiceType(service: IAppDef): string {
+        const tags = service.tags || []
+        const knownTypes = ['frontend', 'backend', 'database', 'worker']
+        const typeTag = tags.find((t) =>
+            knownTypes.includes(t.tagName?.toLowerCase())
+        )
+        if (typeTag) {
+            return typeTag.tagName.toLowerCase()
+        }
+
+        const name = (service.appName || '').toLowerCase()
 
         if (
             name.includes('postgres') ||
@@ -552,6 +623,7 @@ export default class ServiceDetailDrawer extends Component<
 
         if (
             name.includes('frontend') ||
+            name.includes('front') ||
             name.includes('web') ||
             name.includes('ui') ||
             name.includes('client')
@@ -678,12 +750,16 @@ export default class ServiceDetailDrawer extends Component<
                         `/api/v2/user/apps/webhooks/triggerbuild?namespace=captain&token=captain`
                     )
                     .catch(() => {
+                        const deployedVersion = service.deployedVersion || 0
+                        const versionInfo = service.versions?.find(
+                            (v) => v.version === deployedVersion
+                        )
                         return apiManager.uploadCaptainDefinitionContent(
                             service.appName!,
                             {
                                 schemaVersion: 2,
                                 imageName:
-                                    service.versions?.[0]?.deployedImageName ||
+                                    versionInfo?.deployedImageName ||
                                     'caprover/caprover-placeholder-app:latest',
                             },
                             '',
@@ -890,15 +966,119 @@ export default class ServiceDetailDrawer extends Component<
 
     renderOverviewTab() {
         const { service } = this.props
-        const { editedEnvVars } = this.state
+        const { editedEnvVars, containerStats, isLoadingStats } = this.state
 
         if (!service) return null
 
-        const serviceType = this.detectServiceType(service.appName || '')
+        const serviceType = this.detectServiceType(service)
         const color = this.getServiceColor(serviceType)
+
+        const getCpuColor = (percent: number) => {
+            if (percent >= 80) return '#ff4d4f'
+            if (percent >= 50) return '#faad14'
+            return '#52c41a'
+        }
+
+        const getMemoryColor = (percent: number) => {
+            if (percent >= 90) return '#ff4d4f'
+            if (percent >= 70) return '#faad14'
+            return '#52c41a'
+        }
 
         return (
             <div className="service-drawer-tab-content">
+                <div className="service-drawer-section">
+                    <h4 className="service-drawer-section-title">
+                        Resource Usage
+                        {isLoadingStats && (
+                            <LoadingOutlined
+                                style={{ marginLeft: 8, fontSize: 12 }}
+                            />
+                        )}
+                    </h4>
+
+                    {containerStats ? (
+                        <Row gutter={[16, 16]}>
+                            <Col span={12}>
+                                <div className="service-drawer-stat-card">
+                                    <div className="service-drawer-stat-label">
+                                        CPU
+                                    </div>
+                                    <Progress
+                                        percent={Math.min(
+                                            containerStats.cpuPercent,
+                                            100
+                                        )}
+                                        size="small"
+                                        strokeColor={getCpuColor(
+                                            containerStats.cpuPercent
+                                        )}
+                                        format={() =>
+                                            `${containerStats.cpuPercent.toFixed(1)}%`
+                                        }
+                                    />
+                                </div>
+                            </Col>
+                            <Col span={12}>
+                                <div className="service-drawer-stat-card">
+                                    <div className="service-drawer-stat-label">
+                                        Memory
+                                    </div>
+                                    <Progress
+                                        percent={Math.min(
+                                            containerStats.memoryPercent,
+                                            100
+                                        )}
+                                        size="small"
+                                        strokeColor={getMemoryColor(
+                                            containerStats.memoryPercent
+                                        )}
+                                        format={() =>
+                                            `${containerStats.memoryUsageMB.toFixed(0)} MB`
+                                        }
+                                    />
+                                </div>
+                            </Col>
+                            <Col span={12}>
+                                <div className="service-drawer-stat-card">
+                                    <div className="service-drawer-stat-label">
+                                        Network RX
+                                    </div>
+                                    <div className="service-drawer-stat-value">
+                                        {containerStats.networkRxMB.toFixed(1)}{' '}
+                                        MB
+                                    </div>
+                                </div>
+                            </Col>
+                            <Col span={12}>
+                                <div className="service-drawer-stat-card">
+                                    <div className="service-drawer-stat-label">
+                                        Network TX
+                                    </div>
+                                    <div className="service-drawer-stat-value">
+                                        {containerStats.networkTxMB.toFixed(1)}{' '}
+                                        MB
+                                    </div>
+                                </div>
+                            </Col>
+                        </Row>
+                    ) : (
+                        <div
+                            style={{
+                                color: '#666',
+                                textAlign: 'center',
+                                padding: '20px 0',
+                            }}
+                        >
+                            {isLoadingStats
+                                ? 'Loading stats...'
+                                : 'Stats unavailable'}
+                        </div>
+                    )}
+                </div>
+
+                <Divider style={{ borderColor: '#2a2a2a', margin: '20px 0' }} />
+
                 <div className="service-drawer-section">
                     <h4 className="service-drawer-section-title">
                         Service Configuration
@@ -2386,13 +2566,14 @@ export default class ServiceDetailDrawer extends Component<
 
         const status = service.isAppBuilding ? 'deploying' : 'running'
         const statusColor = status === 'running' ? '#10b981' : '#f59e0b'
-        const serviceType = this.detectServiceType(service.appName || '')
+        const serviceType = this.detectServiceType(service)
         const color = this.getServiceColor(serviceType)
 
-        const lastDeployed =
-            service.versions && service.versions.length > 0
-                ? service.versions[0].timeStamp
-                : null
+        const deployedVersion = service.deployedVersion || 0
+        const versionInfo = service.versions?.find(
+            (v) => v.version === deployedVersion
+        )
+        const lastDeployed = versionInfo?.timeStamp || null
 
         const tabItems = [
             {

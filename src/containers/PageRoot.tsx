@@ -1,17 +1,10 @@
-import {
-    BarsOutlined,
-    GiftTwoTone,
-    GlobalOutlined,
-    LogoutOutlined,
-} from '@ant-design/icons'
-import { Button, Col, Layout, Row } from 'antd'
-import React, { Fragment, RefObject } from 'react'
+import { Layout } from 'antd'
+import React, { RefObject } from 'react'
 import { connect } from 'react-redux'
 import { Route, RouteComponentProps, Switch } from 'react-router'
 import ApiManager from '../api/ApiManager'
 import { IVersionInfo } from '../models/IVersionInfo'
 import * as GlobalActions from '../redux/actions/GlobalActions'
-import { localize } from '../utils/Language'
 import StorageHelper from '../utils/StorageHelper'
 import Dashboard from './Dashboard'
 import LoggedInCatchAll from './LoggedInCatchAll'
@@ -27,18 +20,17 @@ import TemplateInputPage from './apps/oneclick/template/TemplateInputPage'
 import OneClickAppConfigPage from './apps/oneclick/variables/OneClickAppConfigPage'
 import OneClickDeploymentPage from './apps/oneclick/variables/OneClickDeploymentPage'
 import ApiComponent from './global/ApiComponent'
-import ClickableLink from './global/ClickableLink'
-import DarkModeSwitch from './global/DarkModeSwitch'
-import LanguageSelector from './global/LanguageSelector'
-import NewTabLink from './global/NewTabLink'
 import Maintenance from './maintenance/Maintenance'
 import Monitoring from './monitoring/Monitoring'
 import Cluster from './nodes/Cluster'
 import Settings from './settings/Settings'
 import ProjectDashboard from './projects/ProjectDashboard'
 import Projects from './projects/Projects'
+import TeamManagement from './team/TeamManagement'
+import ContainerStats from './stats/ContainerStats'
+import '../styles/header-tabs.css'
 
-const { Header, Content } = Layout
+const { Content } = Layout
 
 interface RootPageInterface extends RouteComponentProps<any> {
     rootElementKey: string
@@ -51,7 +43,6 @@ class PageRoot extends ApiComponent<
     {
         versionInfo: IVersionInfo | undefined
         collapsed: boolean
-        showLanguageSelector: boolean
     }
 > {
     private mainContainer: RefObject<HTMLDivElement>
@@ -62,7 +53,6 @@ class PageRoot extends ApiComponent<
         this.state = {
             versionInfo: undefined,
             collapsed: false,
-            showLanguageSelector: false,
         }
     }
 
@@ -113,47 +103,6 @@ class PageRoot extends ApiComponent<
         this.props.history.push('/login')
     }
 
-    createUpdateAvailableIfNeeded() {
-        const self = this
-
-        if (!self.state.versionInfo || !self.state.versionInfo.canUpdate) {
-            return undefined
-        }
-
-        return (
-            <Fragment>
-                <ClickableLink
-                    onLinkClicked={() =>
-                        self.props.history.push('/maintenance')
-                    }
-                >
-                    <GiftTwoTone
-                        style={{
-                            marginInlineStart: 50,
-                        }}
-                    />
-                    <GiftTwoTone
-                        style={{
-                            marginInlineEnd: 10,
-                            marginInlineStart: 3,
-                        }}
-                    />
-                    Update Available!
-                    <GiftTwoTone
-                        style={{
-                            marginInlineStart: 10,
-                        }}
-                    />
-                    <GiftTwoTone
-                        style={{
-                            marginInlineStart: 3,
-                        }}
-                    />
-                </ClickableLink>
-            </Fragment>
-        )
-    }
-
     toggleSider = () => {
         StorageHelper.setSiderCollapsedStateInLocalStorage(
             !this.state.collapsed
@@ -166,101 +115,6 @@ class PageRoot extends ApiComponent<
 
         return (
             <Layout className="full-screen" key={self.props.rootElementKey}>
-                <Header
-                    className="header"
-                    style={{
-                        padding: `0 ${this.props.isMobile ? 15 : 50}px`,
-                    }}
-                >
-                    <Row>
-                        {this.props.isMobile && (
-                            <Col span={4}>
-                                <Button
-                                    ghost
-                                    icon={<BarsOutlined />}
-                                    onClick={this.toggleSider}
-                                />
-                            </Col>
-                        )}
-                        {(this.props.isMobile &&
-                            self.createUpdateAvailableIfNeeded()) || (
-                            <Col lg={{ span: 12 }} xs={{ span: 12 }}>
-                                <Row align="middle">
-                                    <img
-                                        alt="logo"
-                                        src="/icon-512x512.png"
-                                        style={{
-                                            height: 45,
-                                            marginInlineEnd: 10,
-                                        }}
-                                    />
-                                    <h3 style={{ color: '#fff', margin: 0 }}>
-                                        CapRover
-                                    </h3>
-                                    {self.createUpdateAvailableIfNeeded()}
-                                </Row>
-                            </Col>
-                        )}
-                        {!self.props.isMobile && (
-                            <Col span={12}>
-                                <Row justify="end">
-                                    <NewTabLink url="https://github.com/caprover/caprover">
-                                        <span style={{ marginInlineEnd: 20 }}>
-                                            {localize(
-                                                'page_root.github_link',
-                                                'Github'
-                                            )}
-                                        </span>
-                                    </NewTabLink>
-
-                                    <span
-                                        style={{
-                                            marginInlineEnd: 30,
-                                        }}
-                                    >
-                                        <NewTabLink url="https://caprover.com">
-                                            {localize(
-                                                'page_root.docs_link',
-                                                'Docs'
-                                            )}
-                                        </NewTabLink>
-                                    </span>
-                                    <span
-                                        style={{
-                                            marginInlineEnd: 20,
-                                        }}
-                                    >
-                                        <DarkModeSwitch />
-                                    </span>
-                                    <span
-                                        style={{
-                                            marginInlineEnd: 50,
-                                        }}
-                                    >
-                                        {self.createLanguageSelector()}
-                                    </span>
-                                    <span>
-                                        <Button
-                                            type="primary"
-                                            ghost
-                                            onClick={() => {
-                                                ApiManager.clearAuthKeys()
-                                                self.goToLogin()
-                                            }}
-                                        >
-                                            {localize(
-                                                'page_root.logout',
-                                                'Logout'
-                                            )}
-                                            <LogoutOutlined />
-                                        </Button>
-                                    </span>
-                                </Row>
-                            </Col>
-                        )}
-                    </Row>
-                </Header>
-
                 <Layout>
                     <Sidebar
                         isMobile={this.props.isMobile}
@@ -376,24 +230,20 @@ class PageRoot extends ApiComponent<
                                     component={Maintenance}
                                 />
                                 <Route path="/settings/" component={Settings} />
+                                <Route
+                                    path="/team/"
+                                    component={TeamManagement}
+                                />
+                                <Route
+                                    path="/stats/"
+                                    component={ContainerStats}
+                                />
                                 <Route path="/" component={LoggedInCatchAll} />
                             </Switch>
                         </div>
                     </Content>
                 </Layout>
             </Layout>
-        )
-    }
-    createLanguageSelector(): React.ReactNode {
-        const self = this
-        return self.state.showLanguageSelector ? (
-            <LanguageSelector />
-        ) : (
-            <Button
-                onClick={() => self.setState({ showLanguageSelector: true })}
-                shape="circle"
-                icon={<GlobalOutlined />}
-            />
         )
     }
 }

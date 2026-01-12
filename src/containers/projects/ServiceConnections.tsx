@@ -22,8 +22,17 @@ interface ServiceConnectionsProps {
 }
 
 export default class ServiceConnectionsVisualization extends Component<ServiceConnectionsProps> {
-    private detectServiceType(appName: string): string {
-        const name = appName.toLowerCase()
+    private detectServiceType(service: IAppDef): string {
+        const tags = service.tags || []
+        const knownTypes = ['frontend', 'backend', 'database', 'worker']
+        const typeTag = tags.find((t) =>
+            knownTypes.includes(t.tagName?.toLowerCase())
+        )
+        if (typeTag) {
+            return typeTag.tagName.toLowerCase()
+        }
+
+        const name = (service.appName || '').toLowerCase()
 
         if (
             name.includes('postgres') ||
@@ -38,6 +47,7 @@ export default class ServiceConnectionsVisualization extends Component<ServiceCo
 
         if (
             name.includes('frontend') ||
+            name.includes('front') ||
             name.includes('web') ||
             name.includes('ui') ||
             name.includes('client')
@@ -81,7 +91,7 @@ export default class ServiceConnectionsVisualization extends Component<ServiceCo
         }
 
         services.forEach((service) => {
-            const type = this.detectServiceType(service.appName || '')
+            const type = this.detectServiceType(service)
             if (serviceTypes[type]) {
                 serviceTypes[type].push(service)
             }

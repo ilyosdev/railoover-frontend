@@ -1,0 +1,547 @@
+/**
+ * Modern UI Enhancements
+ * Glassmorphism, gradients, and smooth animations for all components
+ */
+
+/* ===== Global Modern Card Styles ===== */
+.ant-card {
+    background: linear-gradient(
+        135deg,
+        rgba(26, 26, 26, 0.95) 0%,
+        rgba(42, 42, 42, 0.9) 100%
+    ) !important;
+    border: 1px solid rgba(255, 255, 255, 0.08) !important;
+    border-radius: 16px !important;
+    backdrop-filter: blur(12px) !important;
+    box-shadow:
+        0 8px 32px rgba(0, 0, 0, 0.4),
+        inset 0 1px 0 rgba(255, 255, 255, 0.05) !important;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1) !important;
+    overflow: hidden !important;
+}
+
+.ant-card:hover {
+    border-color: rgba(79, 91, 255, 0.3) !important;
+    box-shadow:
+        0 12px 48px rgba(0, 0, 0, 0.5),
+        0 0 0 1px rgba(255, 255, 255, 0.1),
+        inset 0 1px 0 rgba(255, 255, 255, 0.1) !important;
+    transform: translateY(-2px) !important;
+}
+
+.ant-card-head {
+    background: rgba(255, 255, 255, 0.03) !important;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.08) !important;
+    backdrop-filter: blur(8px) !important;
+}
+
+.ant-card-head-title {
+    color: #ffffff !important;
+    font-weight: 700 !important;
+    font-size: 18px !important;
+    letter-spacing: -0.3px !important;
+}
+
+.ant-card-body {
+    color: rgba(255, 255, 255, 0.9) !important;
+}
+
+/* ===== Modern Button Styles ===== */
+.ant-btn-primary {
+    background: linear-gradient(135deg, #4f5bff 0%, #6370ff 100%) !important;
+    border: none !important;
+    box-shadow:
+        0 4px 16px rgba(79, 91, 255, 0.4),
+        inset 0 1px 0 rgba(255, 255, 255, 0.2) !important;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1) !important;
+    font-weight: 600 !important;
+}
+
+.ant-btn-primary:hover,
+.ant-btn-primary:focus {
+    background: linear-gradient(135deg, #6370ff 0%, #8b5cf6 100%) !important;
+    transform: translateY(-2px) !important;
+    box-shadow:
+        0 8px 24px rgba(79, 91, 255, 0.6),
+        inset 0 1px 0 rgba(255, 255, 255, 0.3) !important;
+}
+
+.ant-btn-primary:active {
+    transform: translateY(0) !important;
+}
+
+.ant-btn {
+    border-radius: 8px !important;
+    transition: all 0.2s ease !important;
+}
+
+.ant-btn-dashed {
+    background: rgba(255, 255, 255, 0.02) !important;
+    border-color: rgba(255, 255, 255, 0.1) !important;
+    color: rgba(255, 255, 255, 0.7) !important;
+}
+
+.ant-btn-dashed:hover {
+    background: rgba(79, 91, 255, 0.1) !important;
+    border-color: rgba(79, 91, 255, 0.4) !important;
+    color: #ffffff !important;
+    box-shadow: 0 0 16px rgba(79, 91, 255, 0.3) !important;
+}
+
+/* ===== Modern Input Styles ===== */
+.ant-input,
+.ant-input-password,
+.ant-input-affix-wrapper,
+.ant-input-number,
+.ant-select-selector {
+    background: rgba(26, 26, 26, 0.6) !important;
+    border: 1px solid rgba(255, 255, 255, 0.1) !important;
+    color: #ffffff !important;
+    border-radius: 10px !important;
+    backdrop-filter: blur(8px) !important;
+    transition: all 0.3s ease !important;
+}
+
+.ant-input:hover,
+.ant-input-password:hover,
+.ant-input-affix-wrapper:hover,
+.ant-select-selector:hover {
+    border-color: rgba(79, 91, 255, 0.4) !important;
+    background: rgba(42, 42, 42, 0.8) !important;
+}
+
+.ant-input:focus,
+.ant-input-password:focus,
+.ant-input-affix-wrapper:focus,
+.ant-input-affix-wrapper-focused,
+.ant-input-number:focus,
+.ant-select-focused .ant-select-selector {
+    border-color: rgba(79, 91, 255, 0.6) !important;
+    box-shadow:
+        0 0 0 2px rgba(79, 91, 255, 0.15),
+        0 0 16px rgba(79, 91, 255, 0.3) !important;
+    background: rgba(42, 42, 42, 0.9) !important;
+}
+
+.ant-input::placeholder,
+.ant-input-password::placeholder {
+    color: rgba(255, 255, 255, 0.3) !important;
+}
+
+/* ===== Modern Modal Styles ===== */
+.ant-modal-content {
+    background: linear-gradient(
+        135deg,
+        rgba(26, 26, 26, 0.98) 0%,
+        rgba(42, 42, 42, 0.95) 100%
+    ) !important;
+    border: 1px solid rgba(255, 255, 255, 0.1) !important;
+    border-radius: 16px !important;
+    backdrop-filter: blur(20px) !important;
+    box-shadow:
+        0 24px 64px rgba(0, 0, 0, 0.6),
+        inset 0 1px 0 rgba(255, 255, 255, 0.05) !important;
+}
+
+.ant-modal-header {
+    background: rgba(255, 255, 255, 0.03) !important;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.08) !important;
+    backdrop-filter: blur(8px) !important;
+    border-radius: 16px 16px 0 0 !important;
+}
+
+.ant-modal-title {
+    color: #ffffff !important;
+    font-weight: 700 !important;
+    font-size: 20px !important;
+}
+
+.ant-modal-body {
+    color: rgba(255, 255, 255, 0.9) !important;
+}
+
+.ant-modal-footer {
+    background: rgba(255, 255, 255, 0.02) !important;
+    border-top: 1px solid rgba(255, 255, 255, 0.05) !important;
+    backdrop-filter: blur(8px) !important;
+}
+
+/* ===== Modern Menu/Sidebar Styles ===== */
+.ant-menu-dark,
+.ant-menu-dark .ant-menu-sub {
+    background: linear-gradient(
+        180deg,
+        rgba(26, 26, 26, 0.95) 0%,
+        rgba(20, 20, 20, 0.98) 100%
+    ) !important;
+}
+
+.ant-menu-dark.ant-menu-inline .ant-menu-item {
+    border-radius: 8px !important;
+    margin: 4px 8px !important;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1) !important;
+}
+
+.ant-menu-dark.ant-menu-inline .ant-menu-item:hover {
+    background: rgba(79, 91, 255, 0.15) !important;
+    box-shadow: inset 0 0 20px rgba(79, 91, 255, 0.2) !important;
+}
+
+.ant-menu-dark.ant-menu-inline .ant-menu-item-selected {
+    background: linear-gradient(
+        135deg,
+        rgba(79, 91, 255, 0.25) 0%,
+        rgba(139, 92, 246, 0.15) 100%
+    ) !important;
+    border-left: 3px solid #4f5bff !important;
+    box-shadow:
+        0 0 20px rgba(79, 91, 255, 0.3),
+        inset 0 0 20px rgba(79, 91, 255, 0.2) !important;
+}
+
+.ant-menu-dark .ant-menu-item-selected .ant-menu-title-content {
+    color: #ffffff !important;
+    font-weight: 600 !important;
+}
+
+/* ===== Layout Sider ===== */
+.ant-layout-sider {
+    background: linear-gradient(
+        180deg,
+        rgba(10, 10, 10, 0.98) 0%,
+        rgba(20, 20, 20, 0.95) 100%
+    ) !important;
+    border-right: 1px solid rgba(255, 255, 255, 0.05) !important;
+    backdrop-filter: blur(12px) !important;
+    box-shadow: 4px 0 24px rgba(0, 0, 0, 0.3) !important;
+}
+
+/* ===== Modern Table Styles ===== */
+.ant-table {
+    background: transparent !important;
+}
+
+.ant-table-thead > tr > th {
+    background: rgba(255, 255, 255, 0.03) !important;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.08) !important;
+    color: rgba(255, 255, 255, 0.9) !important;
+    font-weight: 600 !important;
+    text-transform: uppercase !important;
+    font-size: 11px !important;
+    letter-spacing: 0.5px !important;
+}
+
+.ant-table-tbody > tr {
+    border-bottom: 1px solid rgba(255, 255, 255, 0.05) !important;
+    transition: all 0.2s ease !important;
+}
+
+.ant-table-tbody > tr:hover > td {
+    background: rgba(79, 91, 255, 0.08) !important;
+}
+
+.ant-table-tbody > tr > td {
+    border-bottom: 1px solid rgba(255, 255, 255, 0.05) !important;
+    color: rgba(255, 255, 255, 0.85) !important;
+}
+
+/* ===== Modern Collapse Styles ===== */
+.ant-collapse {
+    background: transparent !important;
+    border: none !important;
+}
+
+.ant-collapse-item {
+    background: rgba(26, 26, 26, 0.6) !important;
+    border: 1px solid rgba(255, 255, 255, 0.08) !important;
+    border-radius: 12px !important;
+    margin-bottom: 12px !important;
+    backdrop-filter: blur(8px) !important;
+    overflow: hidden !important;
+}
+
+.ant-collapse-header {
+    color: rgba(255, 255, 255, 0.9) !important;
+    font-weight: 600 !important;
+    background: rgba(255, 255, 255, 0.02) !important;
+    transition: all 0.3s ease !important;
+}
+
+.ant-collapse-header:hover {
+    background: rgba(79, 91, 255, 0.1) !important;
+}
+
+.ant-collapse-content {
+    background: rgba(255, 255, 255, 0.02) !important;
+    border-top: 1px solid rgba(255, 255, 255, 0.05) !important;
+}
+
+.ant-collapse-content-box {
+    color: rgba(255, 255, 255, 0.85) !important;
+}
+
+/* ===== Modern Tags ===== */
+.ant-tag {
+    border-radius: 12px !important;
+    border: 1px solid rgba(255, 255, 255, 0.1) !important;
+    background: rgba(255, 255, 255, 0.05) !important;
+    backdrop-filter: blur(4px) !important;
+    padding: 4px 12px !important;
+    font-weight: 500 !important;
+}
+
+/* ===== Modern Tooltip ===== */
+.ant-tooltip-inner {
+    background: rgba(20, 20, 20, 0.95) !important;
+    border: 1px solid rgba(255, 255, 255, 0.1) !important;
+    backdrop-filter: blur(12px) !important;
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.5) !important;
+}
+
+/* ===== Modern Tabs ===== */
+.ant-tabs-nav {
+    background: rgba(255, 255, 255, 0.02) !important;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.08) !important;
+    backdrop-filter: blur(8px) !important;
+}
+
+.ant-tabs-tab {
+    color: rgba(255, 255, 255, 0.6) !important;
+    font-weight: 500 !important;
+    transition: all 0.3s ease !important;
+}
+
+.ant-tabs-tab:hover {
+    color: rgba(255, 255, 255, 0.9) !important;
+}
+
+.ant-tabs-tab-active .ant-tabs-tab-btn {
+    color: #4f5bff !important;
+    font-weight: 600 !important;
+}
+
+.ant-tabs-ink-bar {
+    background: linear-gradient(90deg, #4f5bff 0%, #8b5cf6 100%) !important;
+    height: 3px !important;
+    border-radius: 2px !important;
+    box-shadow: 0 0 12px rgba(79, 91, 255, 0.6) !important;
+}
+
+/* ===== Modern Select Dropdown ===== */
+.ant-select-dropdown {
+    background: rgba(20, 20, 20, 0.98) !important;
+    border: 1px solid rgba(255, 255, 255, 0.1) !important;
+    border-radius: 12px !important;
+    backdrop-filter: blur(16px) !important;
+    box-shadow: 0 12px 48px rgba(0, 0, 0, 0.6) !important;
+}
+
+.ant-select-item {
+    color: rgba(255, 255, 255, 0.8) !important;
+    transition: all 0.2s ease !important;
+}
+
+.ant-select-item:hover {
+    background: rgba(79, 91, 255, 0.15) !important;
+}
+
+.ant-select-item-option-selected {
+    background: rgba(79, 91, 255, 0.25) !important;
+    color: #ffffff !important;
+    font-weight: 600 !important;
+}
+
+/* ===== Page Layout Enhancements ===== */
+.ant-layout {
+    background: linear-gradient(
+        135deg,
+        #0a0a0a 0%,
+        #1a1a1a 50%,
+        #0a0a0a 100%
+    ) !important;
+}
+
+.ant-layout-content {
+    background: transparent !important;
+}
+
+/* ===== Login Page Special Styles ===== */
+.full-screen {
+    min-height: 100vh;
+    background: linear-gradient(
+        135deg,
+        rgba(10, 10, 10, 0.98) 0%,
+        rgba(26, 26, 26, 0.95) 50%,
+        rgba(10, 10, 10, 0.98) 100%
+    );
+    position: relative;
+    overflow: hidden;
+}
+
+.full-screen::before {
+    content: '';
+    position: absolute;
+    top: -50%;
+    left: -50%;
+    width: 200%;
+    height: 200%;
+    background: radial-gradient(
+        circle at center,
+        rgba(79, 91, 255, 0.08) 0%,
+        transparent 50%
+    );
+    animation: rotate-gradient 20s linear infinite;
+}
+
+@keyframes rotate-gradient {
+    from {
+        transform: rotate(0deg);
+    }
+    to {
+        transform: rotate(360deg);
+    }
+}
+
+/* ===== Smooth Scrollbar ===== */
+::-webkit-scrollbar {
+    width: 10px;
+    height: 10px;
+}
+
+::-webkit-scrollbar-track {
+    background: rgba(10, 10, 10, 0.5);
+}
+
+::-webkit-scrollbar-thumb {
+    background: linear-gradient(
+        135deg,
+        rgba(79, 91, 255, 0.6) 0%,
+        rgba(139, 92, 246, 0.6) 100%
+    );
+    border-radius: 5px;
+    border: 2px solid rgba(10, 10, 10, 0.5);
+}
+
+::-webkit-scrollbar-thumb:hover {
+    background: linear-gradient(
+        135deg,
+        rgba(79, 91, 255, 0.8) 0%,
+        rgba(139, 92, 246, 0.8) 100%
+    );
+}
+
+/* ===== Text Selection ===== */
+::selection {
+    background: rgba(79, 91, 255, 0.4);
+    color: #ffffff;
+}
+
+/* ===== Skeleton Loading ===== */
+.ant-skeleton-element {
+    background: linear-gradient(
+        90deg,
+        rgba(255, 255, 255, 0.03) 0%,
+        rgba(255, 255, 255, 0.08) 50%,
+        rgba(255, 255, 255, 0.03) 100%
+    );
+    background-size: 200% 100%;
+    animation: shimmer-skeleton 1.5s infinite;
+}
+
+@keyframes shimmer-skeleton {
+    0% {
+        background-position: -200% 0;
+    }
+    100% {
+        background-position: 200% 0;
+    }
+}
+
+/* ===== Badge Styles ===== */
+.ant-badge-count {
+    background: linear-gradient(135deg, #4f5bff 0%, #8b5cf6 100%);
+    box-shadow: 0 0 12px rgba(79, 91, 255, 0.6);
+}
+
+/* ===== Switch Styles ===== */
+.ant-switch {
+    background: rgba(255, 255, 255, 0.1) !important;
+}
+
+.ant-switch-checked {
+    background: linear-gradient(135deg, #4f5bff 0%, #6370ff 100%) !important;
+    box-shadow: 0 0 12px rgba(79, 91, 255, 0.4) !important;
+}
+
+/* ===== Radio Button Styles ===== */
+.ant-radio-checked .ant-radio-inner {
+    border-color: #4f5bff !important;
+    background: linear-gradient(135deg, #4f5bff 0%, #6370ff 100%) !important;
+    box-shadow: 0 0 8px rgba(79, 91, 255, 0.4) !important;
+}
+
+.ant-radio-inner {
+    background: rgba(255, 255, 255, 0.05) !important;
+    border-color: rgba(255, 255, 255, 0.2) !important;
+}
+
+/* ===== Checkbox Styles ===== */
+.ant-checkbox-checked .ant-checkbox-inner {
+    background: linear-gradient(135deg, #4f5bff 0%, #6370ff 100%) !important;
+    border-color: #4f5bff !important;
+    box-shadow: 0 0 8px rgba(79, 91, 255, 0.4) !important;
+}
+
+.ant-checkbox-inner {
+    background: rgba(255, 255, 255, 0.05) !important;
+    border-color: rgba(255, 255, 255, 0.2) !important;
+    border-radius: 4px !important;
+}
+
+/* ===== Alert Styles ===== */
+.ant-alert {
+    border-radius: 12px !important;
+    border: 1px solid rgba(255, 255, 255, 0.1) !important;
+    backdrop-filter: blur(8px) !important;
+}
+
+.ant-alert-success {
+    background: rgba(16, 185, 129, 0.1) !important;
+    border-color: rgba(16, 185, 129, 0.3) !important;
+}
+
+.ant-alert-info {
+    background: rgba(59, 130, 246, 0.1) !important;
+    border-color: rgba(59, 130, 246, 0.3) !important;
+}
+
+.ant-alert-warning {
+    background: rgba(245, 158, 11, 0.1) !important;
+    border-color: rgba(245, 158, 11, 0.3) !important;
+}
+
+.ant-alert-error {
+    background: rgba(239, 68, 68, 0.1) !important;
+    border-color: rgba(239, 68, 68, 0.3) !important;
+}
+
+/* ===== Progress Bar ===== */
+.ant-progress-bg {
+    background: linear-gradient(90deg, #4f5bff 0%, #8b5cf6 100%) !important;
+    box-shadow: 0 0 12px rgba(79, 91, 255, 0.4) !important;
+}
+
+/* ===== Spin/Loading ===== */
+.ant-spin-dot-item {
+    background: linear-gradient(135deg, #4f5bff 0%, #8b5cf6 100%) !important;
+}
+
+/* ===== Message/Notification ===== */
+.ant-message-notice-content,
+.ant-notification-notice {
+    background: rgba(20, 20, 20, 0.98) !important;
+    border: 1px solid rgba(255, 255, 255, 0.1) !important;
+    border-radius: 12px !important;
+    backdrop-filter: blur(16px) !important;
+    box-shadow: 0 12px 48px rgba(0, 0, 0, 0.6) !important;
+}

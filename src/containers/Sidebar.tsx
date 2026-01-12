@@ -1,18 +1,23 @@
 import {
+    BarChartOutlined,
     ClusterOutlined,
     CodeOutlined,
     ControlOutlined,
     DashboardOutlined,
     LaptopOutlined,
     LogoutOutlined,
+    MenuFoldOutlined,
+    MenuUnfoldOutlined,
     ProjectOutlined,
     SettingOutlined,
+    TeamOutlined,
 } from '@ant-design/icons'
-import { Layout, Menu, MenuProps } from 'antd'
+import { Button, Layout, Menu, MenuProps } from 'antd'
 import React, { useContext } from 'react'
 import CapRoverThemeContext from '../contexts/CapRoverThemeContext'
 import ThemeParser from '../styles/theme/ThemeParser'
 import { localize } from '../utils/Language'
+import '../styles/dashboard-sidebar.css'
 
 const { Sider } = Layout
 
@@ -74,46 +79,83 @@ const Sidebar: React.FC<SidebarProps> = ({
             label: localize('menu_item.settings', 'Settings'),
             icon: <SettingOutlined />,
         },
-    ]
+        {
+            key: 'team',
+            label: localize('menu_item.team', 'Team'),
+            icon: <TeamOutlined />,
+        },
+        { type: 'divider' },
+        {
+            key: 'logout',
+            label: localize('page_root.logout', 'Logout'),
+            icon: <LogoutOutlined />,
+            danger: true,
+        },
+    ] as MenuProps['items']
 
     const LOGOUT = 'logout'
 
-    if (isMobile) {
-        MENU_ITEMS.push({
-            key: LOGOUT,
-            label: localize('page_root.logout', 'Logout'),
-            icon: <LogoutOutlined />,
-        })
-    }
-
     return (
-        <Sider
-            breakpoint="lg"
-            theme={siderTheme}
-            trigger={isMobile && undefined}
-            collapsible
-            collapsed={collapsed}
-            width={200}
-            collapsedWidth={isMobile ? 0 : 80}
-            style={{ zIndex: 2 }}
-            onCollapse={toggleSider}
-        >
-            <Menu
-                selectedKeys={[location.pathname.substring(1)]}
+        <>
+            {isMobile && collapsed && (
+                <Button
+                    type="primary"
+                    icon={<MenuUnfoldOutlined />}
+                    onClick={toggleSider}
+                    style={{
+                        position: 'fixed',
+                        top: 16,
+                        left: 16,
+                        zIndex: 1000,
+                    }}
+                />
+            )}
+            <Sider
+                breakpoint="lg"
                 theme={siderTheme}
-                mode="inline"
-                defaultSelectedKeys={['dashboard']}
-                style={{ height: '100%', borderRight: 0 }}
-                items={MENU_ITEMS}
-                onClick={(e) => {
-                    if (e.key === LOGOUT) {
-                        onLogoutClicked()
-                    } else {
-                        history.push(`/${e.key}`)
-                    }
-                }}
-            ></Menu>
-        </Sider>
+                trigger={isMobile && undefined}
+                collapsible
+                collapsed={collapsed}
+                width={200}
+                collapsedWidth={isMobile ? 0 : 80}
+                style={{ zIndex: 2 }}
+                onCollapse={toggleSider}
+            >
+                <div className="sidebar-logo-container">
+                    {isMobile && !collapsed && (
+                        <Button
+                            type="text"
+                            icon={<MenuFoldOutlined />}
+                            onClick={toggleSider}
+                            style={{ marginRight: 8 }}
+                        />
+                    )}
+                    <img
+                        src="/icon-512x512.png"
+                        alt="Railover"
+                        className="sidebar-logo-image"
+                    />
+                    {!collapsed && (
+                        <span className="sidebar-logo-text">Railover</span>
+                    )}
+                </div>
+                <Menu
+                    selectedKeys={[location.pathname.substring(1)]}
+                    theme={siderTheme}
+                    mode="inline"
+                    defaultSelectedKeys={['dashboard']}
+                    style={{ height: 'calc(100% - 64px)', borderRight: 0 }}
+                    items={MENU_ITEMS}
+                    onClick={(e) => {
+                        if (e.key === LOGOUT) {
+                            onLogoutClicked()
+                        } else {
+                            history.push(`/${e.key}`)
+                        }
+                    }}
+                ></Menu>
+            </Sider>
+        </>
     )
 }
 

@@ -2,6 +2,7 @@ import { Col, Row } from 'antd'
 import { Component } from 'react'
 import { IAppDef } from '../apps/AppDefinition'
 import ServiceCard from './ServiceCard'
+import ServiceCardSkeleton from './ServiceCardSkeleton'
 import '../../styles/project-dashboard.css'
 
 interface ServiceTypeSectionProps {
@@ -10,11 +11,21 @@ interface ServiceTypeSectionProps {
     color: string
     projectId?: string
     onServiceClick?: (service: IAppDef) => void
+    isLoading?: boolean
+    skeletonCount?: number
 }
 
 export default class ServiceTypeSection extends Component<ServiceTypeSectionProps> {
     render() {
-        const { title, services, color, projectId, onServiceClick } = this.props
+        const {
+            title,
+            services,
+            color,
+            projectId,
+            onServiceClick,
+            isLoading,
+            skeletonCount = 3,
+        } = this.props
         const typeClass = title.toLowerCase()
 
         return (
@@ -27,22 +38,28 @@ export default class ServiceTypeSection extends Component<ServiceTypeSectionProp
                 </div>
 
                 <Row gutter={[16, 16]}>
-                    {services.map((service) => (
-                        <Col
-                            key={service.appName}
-                            xs={24}
-                            sm={12}
-                            lg={8}
-                            xl={6}
-                        >
-                            <ServiceCard
-                                service={service}
-                                color={color}
-                                projectId={projectId}
-                                onServiceClick={onServiceClick}
-                            />
-                        </Col>
-                    ))}
+                    {isLoading
+                        ? Array.from({ length: skeletonCount }).map((_, i) => (
+                              <Col key={i} xs={24} sm={12} lg={8} xl={6}>
+                                  <ServiceCardSkeleton color={color} />
+                              </Col>
+                          ))
+                        : services.map((service) => (
+                              <Col
+                                  key={service.appName}
+                                  xs={24}
+                                  sm={12}
+                                  lg={8}
+                                  xl={6}
+                              >
+                                  <ServiceCard
+                                      service={service}
+                                      color={color}
+                                      projectId={projectId}
+                                      onServiceClick={onServiceClick}
+                                  />
+                              </Col>
+                          ))}
                 </Row>
             </div>
         )

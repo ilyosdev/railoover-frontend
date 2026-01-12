@@ -123,9 +123,22 @@ export default class DatabaseQuickCreate extends ApiComponent<
         const config = DATABASE_CONFIGS[selectedDbType]
 
         let appDef: any = null
+        let appAlreadyExists = false
 
         Promise.resolve()
             .then(function () {
+                return self.apiManager.getAllApps()
+            })
+            .then(function (data) {
+                const existingApp = data.appDefinitions.find(
+                    (a) => a.appName === serviceName
+                )
+                if (existingApp) {
+                    appAlreadyExists = true
+                    throw new Error(
+                        `Service "${serviceName}" already exists. Please choose a different name.`
+                    )
+                }
                 return self.apiManager.registerNewApp(
                     serviceName,
                     self.props.projectId,
@@ -151,6 +164,10 @@ export default class DatabaseQuickCreate extends ApiComponent<
                 appDef.envVars = envVars
                 appDef.instanceCount = 1
                 appDef.notExposeAsWebApp = true
+                appDef.tags = [
+                    { tagName: 'database' },
+                    { tagName: selectedDbType },
+                ]
 
                 return self.apiManager.updateConfigAndSave(serviceName, appDef)
             })
