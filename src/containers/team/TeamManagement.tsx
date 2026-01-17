@@ -37,6 +37,11 @@ const TeamManagement: React.FC<TeamManagementProps> = () => {
         role: UserRole.DEVELOPER,
     })
 
+    const [editPassword, setEditPassword] = useState({
+        newPassword: '',
+        confirmPassword: '',
+    })
+
     useEffect(() => {
         loadUsers()
     }, [])
@@ -87,8 +92,27 @@ const TeamManagement: React.FC<TeamManagementProps> = () => {
         }
     }
 
-    const handleUpdateRole = async () => {
+    const handleUpdateUser = async () => {
         if (!selectedUser) return
+
+        if (editPassword.newPassword || editPassword.confirmPassword) {
+            if (editPassword.newPassword !== editPassword.confirmPassword) {
+                message.error(
+                    localize('team.password_mismatch', 'Passwords do not match')
+                )
+                return
+            }
+            if (editPassword.newPassword.length < 4) {
+                message.error(
+                    localize(
+                        'team.password_too_short',
+                        'Password must be at least 4 characters'
+                    )
+                )
+                return
+            }
+        }
+
         try {
             await apiManager.executeGenericApiCommand(
                 'POST',
@@ -97,15 +121,40 @@ const TeamManagement: React.FC<TeamManagementProps> = () => {
                     role: formData.role,
                 }
             )
-            message.success(localize('team.role_updated', 'User role updated'))
-            setShowEditRoleModal(false)
+
+            if (editPassword.newPassword) {
+                await apiManager.executeGenericApiCommand(
+                    'POST',
+                    `/user/users/${selectedUser.id}/password`,
+                    {
+                        password: editPassword.newPassword,
+                    }
+                )
+                message.success(
+                    localize(
+                        'team.user_updated_with_password',
+                        'User updated and password changed'
+                    )
+                )
+            } else {
+                message.success(
+                    localize('team.user_updated', 'User updated successfully')
+                )
+            }
+
+            closeEditModal()
             loadUsers()
         } catch (error: any) {
             message.error(
                 error?.message ||
-                    localize('team.update_error', 'Failed to update role')
+                    localize('team.update_error', 'Failed to update user')
             )
         }
+    }
+
+    const closeEditModal = () => {
+        setShowEditRoleModal(false)
+        setEditPassword({ newPassword: '', confirmPassword: '' })
     }
 
     const handleDeleteUser = async (userId: string) => {
@@ -242,10 +291,14 @@ const TeamManagement: React.FC<TeamManagementProps> = () => {
                         onClick={() => {
                             setSelectedUser(record)
                             setFormData({ ...formData, role: record.role })
+                            setEditPassword({
+                                newPassword: '',
+                                confirmPassword: '',
+                            })
                             setShowEditRoleModal(true)
                         }}
                     >
-                        {localize('team.edit_role', 'Edit Role')}
+                        {localize('team.edit', 'Edit')}
                     </Button>
                     <Popconfirm
                         title={localize(
@@ -401,16 +454,17 @@ const TeamManagement: React.FC<TeamManagementProps> = () => {
             </Modal>
 
             <Modal
-                title={localize('team.update_role', 'Update User Role')}
+                title={localize('team.edit_user', 'Edit User')}
                 open={showEditRoleModal}
-                onOk={handleUpdateRole}
-                onCancel={() => setShowEditRoleModal(false)}
+                onOk={handleUpdateUser}
+                onCancel={closeEditModal}
                 okText={localize('team.update', 'Update')}
                 cancelText={localize('common.cancel', 'Cancel')}
+                width={480}
             >
                 <Space direction="vertical" style={{ width: '100%' }} size={16}>
                     {selectedUser && (
-                        <div>
+                        <div className="edit-user-info">
                             <p>
                                 <strong>
                                     {localize(
@@ -448,6 +502,81 @@ const TeamManagement: React.FC<TeamManagementProps> = () => {
                                 {localize('team.role.viewer', 'Viewer')}
                             </Select.Option>
                         </Select>
+                    </div>
+
+                    <div className="password-section-divider">
+                        <span>
+                            {localize(
+                                'team.change_password_optional',
+                                'Change Password (Optional)'
+                            )}
+                        </span>
+                    </div>
+
+                    <div>
+                        <label>
+                            {localize('team.form.new_password', 'New Password')}
+                        </label>
+                        <Input.Password
+                            placeholder={localize(
+                                'team.form.new_password_placeholder',
+                                'Leave blank to keep current password'
+                            )}
+                            value={editPassword.newPassword}
+                            onChange={(e) =>
+                                setEditPassword({
+                                    ...editPassword,
+                                    newPassword: e.target.value,
+                                })
+                            }
+                            style={{ marginTop: 8 }}
+                        />
+                    </div>
+
+                    <div>
+                        <label>
+                            {localize(
+                                'team.form.confirm_password',
+                                'Confirm Password'
+                            )}
+                        </label>
+                        <Input.Password
+                            placeholder={localize(
+                                'team.form.confirm_password_placeholder',
+                                'Re-enter new password'
+                            )}
+                            value={editPassword.confirmPassword}
+                            onChange={(e) =>
+                                setEditPassword({
+                                    ...editPassword,
+                                    confirmPassword: e.target.value,
+                                })
+                            }
+                            style={{ marginTop: 8 }}
+                            status={
+                                editPassword.confirmPassword &&
+                                editPassword.newPassword !==
+                                    editPassword.confirmPassword
+                                    ? 'error'
+                                    : undefined
+                            }
+                        />
+                        {editPassword.confirmPassword &&
+                            editPassword.newPassword !==
+                                editPassword.confirmPassword && (
+                                <div
+                                    style={{
+                                        color: '#ff4d4f',
+                                        fontSize: 12,
+                                        marginTop: 4,
+                                    }}
+                                >
+                                    {localize(
+                                        'team.password_mismatch',
+                                        'Passwords do not match'
+                                    )}
+                                </div>
+                            )}
                     </div>
                 </Space>
             </Modal>

@@ -18,6 +18,7 @@ import {
     Select,
     Progress,
 } from 'antd'
+import LogsModal from './LogsModal'
 import {
     CloseOutlined,
     CloudServerOutlined,
@@ -43,6 +44,7 @@ import {
     GlobalOutlined,
     LockOutlined,
     SafetyCertificateOutlined,
+    ExpandOutlined,
 } from '@ant-design/icons'
 import moment from 'moment'
 import { Component } from 'react'
@@ -119,10 +121,20 @@ interface ServiceDetailDrawerState {
     isLoadingRepos: boolean
     isLoadingBranches: boolean
     isConnectingRepo: boolean
+    isSearchingRepos: boolean
+    repoSearchTerm: string
     newDomain: string
     isAddingDomain: boolean
     enablingSslDomain: string
     removingDomain: string
+    showLogsModal: boolean
+    buildLogs: string
+    lastBuildLineNumber: number
+    showBuildLogs: boolean
+    showBuildLogsModal: boolean
+    buildLogsModalVersion: number | null
+    buildLogsModalContent: string
+    isLoadingBuildLogsModal: boolean
 }
 
 export default class ServiceDetailDrawer extends Component<
@@ -131,7 +143,20 @@ export default class ServiceDetailDrawer extends Component<
 > {
     private logFetchInterval: NodeJS.Timeout | null = null
     private statsFetchInterval: NodeJS.Timeout | null = null
+    private buildLogFetchInterval: NodeJS.Timeout | null = null
     private willUnmountSoon = false
+    private debouncedSearchRepos!: (searchTerm: string) => void
+
+    private debounce<T extends (...args: any[]) => void>(
+        func: T,
+        wait: number
+    ): T {
+        let timeoutId: ReturnType<typeof setTimeout> | null = null
+        return ((...args: Parameters<T>) => {
+            if (timeoutId) clearTimeout(timeoutId)
+            timeoutId = setTimeout(() => func(...args), wait)
+        }) as T
+    }
 
     constructor(props: ServiceDetailDrawerProps) {
         super(props)
@@ -175,11 +200,26 @@ export default class ServiceDetailDrawer extends Component<
             isLoadingRepos: false,
             isLoadingBranches: false,
             isConnectingRepo: false,
+            isSearchingRepos: false,
+            repoSearchTerm: '',
             newDomain: '',
             isAddingDomain: false,
             enablingSslDomain: '',
             removingDomain: '',
+            showLogsModal: false,
+            buildLogs: '',
+            lastBuildLineNumber: -10000,
+            showBuildLogs: false,
+            showBuildLogsModal: false,
+            buildLogsModalVersion: null,
+            buildLogsModalContent: '',
+            isLoadingBuildLogsModal: false,
         }
+
+        this.debouncedSearchRepos = this.debounce(
+            this.searchGitHubRepos.bind(this),
+            300
+        )
     }
 
     componentDidUpdate(prevProps: ServiceDetailDrawerProps) {
@@ -207,9 +247,30 @@ export default class ServiceDetailDrawer extends Component<
             this.startStatsFetching()
         }
 
+        if (
+            this.props.visible &&
+            prevProps.service?.appPushWebhook?.repoInfo !==
+                this.props.service?.appPushWebhook?.repoInfo
+        ) {
+            const repoInfo = this.props.service?.appPushWebhook?.repoInfo
+            this.setState({
+                gitRepo: repoInfo?.repo || '',
+                gitBranch: repoInfo?.branch || '',
+                gitUser: repoInfo?.user || '',
+                gitPassword: repoInfo?.password || '',
+                gitSshKey: repoInfo?.sshKey || '',
+            })
+        }
+
         if (prevProps.visible && !this.props.visible) {
             this.stopLogFetching()
             this.stopStatsFetching()
+            this.stopBuildLogFetching()
+            this.setState({
+                buildLogs: '',
+                lastBuildLineNumber: -10000,
+                showBuildLogs: false,
+            })
         }
     }
 
@@ -252,6 +313,37 @@ export default class ServiceDetailDrawer extends Component<
             })
             .catch(function () {
                 self.setState({ isLoadingRepos: false })
+            })
+    }
+
+    searchGitHubRepos(searchTerm: string) {
+        const self = this
+        const { apiManager } = this.props
+
+        self.setState({ repoSearchTerm: searchTerm })
+
+        if (!searchTerm.trim()) {
+            self.fetchGitHubRepos()
+            return
+        }
+
+        self.setState({ isSearchingRepos: true })
+
+        const encodedSearch = encodeURIComponent(searchTerm)
+        apiManager
+            .executeGenericApiCommand(
+                'GET',
+                `/user/github/repos?search=${encodedSearch}`,
+                {}
+            )
+            .then(function (data: any) {
+                self.setState({
+                    githubRepos: data.repos || [],
+                    isSearchingRepos: false,
+                })
+            })
+            .catch(function () {
+                self.setState({ isSearchingRepos: false })
             })
     }
 
@@ -334,7 +426,10 @@ export default class ServiceDetailDrawer extends Component<
             .executeGenericApiCommand('POST', '/user/github/callback', { code })
             .then(function () {
                 message.success('GitHub connected successfully!')
-                self.setState({ githubConnected: true })
+                self.setState({
+                    githubConnected: true,
+                    githubConfigured: true,
+                })
                 self.fetchGitHubRepos()
             })
             .catch(Toaster.createCatcher())
@@ -476,6 +571,7 @@ export default class ServiceDetailDrawer extends Component<
         this.willUnmountSoon = true
         this.stopLogFetching()
         this.stopStatsFetching()
+        this.stopBuildLogFetching()
     }
 
     startLogFetching() {
@@ -502,6 +598,128 @@ export default class ServiceDetailDrawer extends Component<
             clearInterval(this.statsFetchInterval)
             this.statsFetchInterval = null
         }
+    }
+
+    startBuildLogFetching() {
+        if (this.buildLogFetchInterval) return
+        this.fetchBuildLogs()
+        this.buildLogFetchInterval = setInterval(
+            () => this.fetchBuildLogs(),
+            2000
+        )
+    }
+
+    stopBuildLogFetching() {
+        if (this.buildLogFetchInterval) {
+            clearInterval(this.buildLogFetchInterval)
+            this.buildLogFetchInterval = null
+        }
+    }
+
+    fetchBuildLogs() {
+        const self = this
+        const { service, apiManager, onServiceUpdated } = this.props
+
+        if (!service || !service.appName) return
+
+        apiManager
+            .fetchBuildLogs(service.appName)
+            .then(function (logInfo: {
+                isAppBuilding: boolean
+                isBuildFailed: boolean
+                logs: {
+                    firstLineNumber: number
+                    lines: string[]
+                }
+            }) {
+                if (self.willUnmountSoon) return
+
+                const wasBuilding = service.isAppBuilding
+                if (wasBuilding && !logInfo.isAppBuilding) {
+                    if (onServiceUpdated) onServiceUpdated()
+                }
+
+                if (logInfo.isAppBuilding) {
+                    self.setState({ showBuildLogs: true })
+                }
+
+                const lines = logInfo.logs.lines
+                const firstLineNumber = logInfo.logs.firstLineNumber
+                let firstLinesToPrint = 0
+
+                if (firstLineNumber > self.state.lastBuildLineNumber) {
+                    if (firstLineNumber < 0) {
+                        firstLinesToPrint = -firstLineNumber
+                    } else {
+                        self.setState({
+                            buildLogs:
+                                self.state.buildLogs + '[[ TRUNCATED ]]\n',
+                        })
+                    }
+                } else {
+                    firstLinesToPrint =
+                        self.state.lastBuildLineNumber - firstLineNumber
+                }
+
+                self.setState({
+                    lastBuildLineNumber: firstLineNumber + lines.length,
+                })
+
+                const ansiRegex = Utils.getAnsiColorRegex()
+                let newLogs = self.state.buildLogs
+                for (let i = firstLinesToPrint; i < lines.length; i++) {
+                    const line = (lines[i] || '').trim().replace(ansiRegex, '')
+                    newLogs += line + '\n'
+                }
+                self.setState({ buildLogs: newLogs })
+            })
+            .catch(function () {})
+    }
+
+    fetchBuildLogsForVersion(version: number) {
+        const self = this
+        const { service, apiManager } = this.props
+
+        if (!service || !service.appName) return
+
+        self.setState({
+            showBuildLogsModal: true,
+            buildLogsModalVersion: version,
+            buildLogsModalContent: '',
+            isLoadingBuildLogsModal: true,
+        })
+
+        apiManager
+            .fetchBuildLogs(service.appName)
+            .then(function (logInfo: {
+                isAppBuilding: boolean
+                isBuildFailed: boolean
+                logs: {
+                    firstLineNumber: number
+                    lines: string[]
+                }
+            }) {
+                if (self.willUnmountSoon) return
+
+                const ansiRegex = Utils.getAnsiColorRegex()
+                const lines = logInfo.logs.lines || []
+                const logsContent = lines
+                    .map((line) => (line || '').trim().replace(ansiRegex, ''))
+                    .join('\n')
+
+                self.setState({
+                    buildLogsModalContent:
+                        logsContent ||
+                        'No build logs available for this version.',
+                    isLoadingBuildLogsModal: false,
+                })
+            })
+            .catch(function () {
+                self.setState({
+                    buildLogsModalContent: 'Failed to fetch build logs.',
+                    isLoadingBuildLogsModal: false,
+                })
+            })
     }
 
     fetchStats() {
@@ -729,6 +947,69 @@ export default class ServiceDetailDrawer extends Component<
             .then(function () {
                 self.setState({ isSaving: false })
             })
+    }
+
+    handleDeploy() {
+        const self = this
+        const { service, apiManager, onServiceUpdated } = this.props
+
+        if (!service || !service.appName) return
+
+        const hasGitHubRepo = !!service.appPushWebhook?.repoInfo?.repo
+        const webhookToken = service.appPushWebhook?.pushWebhookToken
+
+        if (hasGitHubRepo && webhookToken) {
+            Modal.confirm({
+                title: 'Deploy from Repository',
+                content: (
+                    <div>
+                        <p>
+                            This will trigger a new build from your connected
+                            repository:
+                        </p>
+                        <div
+                            style={{
+                                background: '#1a1a1a',
+                                padding: 12,
+                                borderRadius: 6,
+                                marginTop: 12,
+                            }}
+                        >
+                            <div style={{ color: '#999', marginBottom: 4 }}>
+                                <GithubOutlined style={{ marginRight: 8 }} />
+                                {service.appPushWebhook?.repoInfo?.repo}
+                            </div>
+                            <div style={{ color: '#666', fontSize: 12 }}>
+                                <BranchesOutlined style={{ marginRight: 8 }} />
+                                {service.appPushWebhook?.repoInfo?.branch ||
+                                    'main'}
+                            </div>
+                        </div>
+                    </div>
+                ),
+                okText: 'Deploy',
+                okType: 'primary',
+                onOk() {
+                    self.setState({ isRedeploying: true })
+
+                    const webhookUrl = `/user/apps/webhooks/triggerbuild?namespace=captain&token=${webhookToken}`
+
+                    apiManager
+                        .forceBuild(webhookUrl)
+                        .then(function () {
+                            message.success('Build triggered successfully')
+                            self.startBuildLogFetching()
+                            if (onServiceUpdated) onServiceUpdated()
+                        })
+                        .catch(Toaster.createCatcher())
+                        .then(function () {
+                            self.setState({ isRedeploying: false })
+                        })
+                },
+            })
+        } else {
+            self.handleRedeploy()
+        }
     }
 
     handleRedeploy() {
@@ -1580,14 +1861,19 @@ export default class ServiceDetailDrawer extends Component<
         if (!service) return null
 
         const versions = service.versions || []
+        const sortedVersions = [...versions].sort(
+            (a, b) => b.version - a.version
+        )
         const isBuilding = service.isAppBuilding
         const currentVersion = service.deployedVersion || 0
+        const newestVersion = sortedVersions[0]?.version
 
-        const getDeploymentStatus = (
-            version: { version: number; deployedImageName?: string },
-            index: number
-        ) => {
-            if (index === 0 && isBuilding) return 'building'
+        const getDeploymentStatus = (version: {
+            version: number
+            deployedImageName?: string
+        }) => {
+            if (isBuilding && version.version === newestVersion)
+                return 'building'
             if (!version.deployedImageName) return 'failed'
             if (version.version === currentVersion) return 'current'
             return 'previous'
@@ -1600,9 +1886,9 @@ export default class ServiceDetailDrawer extends Component<
                         <div className="deployments-header-left">
                             <h4 className="service-drawer-section-title">
                                 Deployment History
-                                {versions.length > 0 && (
+                                {sortedVersions.length > 0 && (
                                     <span className="service-drawer-count-badge">
-                                        {versions.length}
+                                        {sortedVersions.length}
                                     </span>
                                 )}
                             </h4>
@@ -1617,196 +1903,233 @@ export default class ServiceDetailDrawer extends Component<
                             type="primary"
                             icon={<ReloadOutlined />}
                             loading={this.state.isRedeploying}
-                            onClick={() => this.handleRedeploy()}
+                            onClick={() => this.handleDeploy()}
                             className="deploy-button"
                         >
                             Deploy
                         </Button>
                     </div>
 
-                    {versions.length > 0 ? (
-                        <div className="deployments-timeline">
-                            {versions.slice(0, 15).map((version, index) => {
-                                const status = getDeploymentStatus(
-                                    version,
-                                    index
-                                )
-                                const isCurrent =
-                                    version.version === currentVersion
-                                const isExpanded =
-                                    expandedDeploymentLogs === version.version
-
-                                return (
-                                    <div
-                                        key={version.version}
-                                        className={`deployment-timeline-item ${status}`}
+                    {(isBuilding || this.state.showBuildLogs) &&
+                        this.state.buildLogs && (
+                            <div className="build-logs-section">
+                                <div className="build-logs-header">
+                                    <h4 className="build-logs-title">
+                                        {isBuilding ? (
+                                            <>
+                                                <LoadingOutlined spin /> Build
+                                                Logs
+                                            </>
+                                        ) : (
+                                            'Build Logs'
+                                        )}
+                                    </h4>
+                                    <Button
+                                        type="text"
+                                        size="small"
+                                        onClick={() =>
+                                            this.setState({
+                                                showBuildLogs: false,
+                                                buildLogs: '',
+                                                lastBuildLineNumber: -10000,
+                                            })
+                                        }
                                     >
-                                        <div className="deployment-timeline-track">
-                                            <div
-                                                className={`deployment-timeline-dot ${status}`}
-                                            >
-                                                {status === 'building' ? (
-                                                    <LoadingOutlined spin />
-                                                ) : status === 'current' ? (
-                                                    <CheckCircleOutlined />
-                                                ) : status === 'failed' ? (
-                                                    <ExclamationCircleOutlined />
-                                                ) : (
-                                                    <ClockCircleOutlined />
-                                                )}
-                                            </div>
-                                            {index < versions.length - 1 && (
-                                                <div className="deployment-timeline-line" />
-                                            )}
-                                        </div>
+                                        Clear
+                                    </Button>
+                                </div>
+                                <div className="build-logs-content">
+                                    <pre>{this.state.buildLogs}</pre>
+                                </div>
+                            </div>
+                        )}
 
+                    {sortedVersions.length > 0 ? (
+                        <div className="deployments-timeline">
+                            {sortedVersions
+                                .slice(0, 15)
+                                .map((version, index) => {
+                                    const status = getDeploymentStatus(version)
+                                    const isCurrent =
+                                        version.version === currentVersion
+                                    const isExpanded =
+                                        expandedDeploymentLogs ===
+                                        version.version
+
+                                    return (
                                         <div
-                                            className={`deployment-card ${status}`}
+                                            key={version.version}
+                                            className={`deployment-timeline-item ${status}`}
                                         >
-                                            <div className="deployment-card-header">
-                                                <div className="deployment-card-title">
-                                                    <span className="deployment-version">
-                                                        #{version.version}
-                                                    </span>
-                                                    {isCurrent && (
-                                                        <Tag
-                                                            color="green"
-                                                            className="deployment-current-tag"
-                                                        >
-                                                            Current
-                                                        </Tag>
-                                                    )}
-                                                    {status === 'building' && (
-                                                        <Tag
-                                                            color="blue"
-                                                            className="deployment-building-tag"
-                                                        >
-                                                            Building
-                                                        </Tag>
-                                                    )}
-                                                    {status === 'failed' && (
-                                                        <Tag
-                                                            color="red"
-                                                            className="deployment-failed-tag"
-                                                        >
-                                                            Failed
-                                                        </Tag>
+                                            <div className="deployment-timeline-track">
+                                                <div
+                                                    className={`deployment-timeline-dot ${status}`}
+                                                >
+                                                    {status === 'building' ? (
+                                                        <LoadingOutlined spin />
+                                                    ) : status === 'current' ? (
+                                                        <CheckCircleOutlined />
+                                                    ) : status === 'failed' ? (
+                                                        <ExclamationCircleOutlined />
+                                                    ) : (
+                                                        <ClockCircleOutlined />
                                                     )}
                                                 </div>
-                                                <span className="deployment-time">
-                                                    {moment(
-                                                        version.timeStamp
-                                                    ).fromNow()}
-                                                </span>
+                                                {index <
+                                                    versions.length - 1 && (
+                                                    <div className="deployment-timeline-line" />
+                                                )}
                                             </div>
 
-                                            <div className="deployment-card-body">
-                                                {version.gitHash && (
-                                                    <div className="deployment-meta-row">
-                                                        <CodeOutlined className="deployment-meta-icon" />
-                                                        <Tooltip
-                                                            title={
-                                                                version.gitHash
-                                                            }
-                                                        >
-                                                            <span
-                                                                className="deployment-git-hash"
+                                            <div
+                                                className={`deployment-card ${status}`}
+                                            >
+                                                <div className="deployment-card-header">
+                                                    <div className="deployment-card-title">
+                                                        <span className="deployment-version">
+                                                            #{version.version}
+                                                        </span>
+                                                        {isCurrent && (
+                                                            <Tag
+                                                                color="green"
+                                                                className="deployment-current-tag"
+                                                            >
+                                                                Current
+                                                            </Tag>
+                                                        )}
+                                                        {status ===
+                                                            'building' && (
+                                                            <Tag
+                                                                color="blue"
+                                                                className="deployment-building-tag"
+                                                            >
+                                                                Building
+                                                            </Tag>
+                                                        )}
+                                                        {status ===
+                                                            'failed' && (
+                                                            <Tag
+                                                                color="red"
+                                                                className="deployment-failed-tag"
+                                                            >
+                                                                Failed
+                                                            </Tag>
+                                                        )}
+                                                    </div>
+                                                    <span className="deployment-time">
+                                                        {moment(
+                                                            version.timeStamp
+                                                        ).fromNow()}
+                                                    </span>
+                                                </div>
+
+                                                <div className="deployment-card-body">
+                                                    {version.gitHash && (
+                                                        <div className="deployment-meta-row">
+                                                            <CodeOutlined className="deployment-meta-icon" />
+                                                            <Tooltip
+                                                                title={
+                                                                    version.gitHash
+                                                                }
+                                                            >
+                                                                <span
+                                                                    className="deployment-git-hash"
+                                                                    onClick={() =>
+                                                                        this.copyToClipboard(
+                                                                            version.gitHash ||
+                                                                                ''
+                                                                        )
+                                                                    }
+                                                                >
+                                                                    {version.gitHash.substring(
+                                                                        0,
+                                                                        7
+                                                                    )}
+                                                                    <CopyOutlined className="deployment-copy-icon" />
+                                                                </span>
+                                                            </Tooltip>
+                                                        </div>
+                                                    )}
+
+                                                    {version.deployedImageName && (
+                                                        <div className="deployment-meta-row">
+                                                            <CloudServerOutlined className="deployment-meta-icon" />
+                                                            <Tooltip
+                                                                title={
+                                                                    version.deployedImageName
+                                                                }
+                                                            >
+                                                                <span className="deployment-image-name">
+                                                                    {version
+                                                                        .deployedImageName
+                                                                        .length >
+                                                                    40
+                                                                        ? version.deployedImageName.substring(
+                                                                              0,
+                                                                              40
+                                                                          ) +
+                                                                          '...'
+                                                                        : version.deployedImageName}
+                                                                </span>
+                                                            </Tooltip>
+                                                        </div>
+                                                    )}
+
+                                                    <div className="deployment-meta-row deployment-timestamp">
+                                                        <ClockCircleOutlined className="deployment-meta-icon" />
+                                                        <span>
+                                                            {moment(
+                                                                version.timeStamp
+                                                            ).format(
+                                                                'MMM DD, YYYY [at] HH:mm'
+                                                            )}
+                                                        </span>
+                                                    </div>
+                                                </div>
+
+                                                <div className="deployment-card-actions">
+                                                    {!isCurrent &&
+                                                        version.deployedImageName && (
+                                                            <Button
+                                                                size="small"
+                                                                icon={
+                                                                    <RollbackOutlined />
+                                                                }
                                                                 onClick={() =>
-                                                                    this.copyToClipboard(
-                                                                        version.gitHash ||
+                                                                    this.handleRollback(
+                                                                        version.version,
+                                                                        version.deployedImageName ||
                                                                             ''
                                                                     )
                                                                 }
+                                                                loading={
+                                                                    isRollingBack
+                                                                }
+                                                                className="deployment-action-btn rollback"
                                                             >
-                                                                {version.gitHash.substring(
-                                                                    0,
-                                                                    7
-                                                                )}
-                                                                <CopyOutlined className="deployment-copy-icon" />
-                                                            </span>
-                                                        </Tooltip>
-                                                    </div>
-                                                )}
-
-                                                {version.deployedImageName && (
-                                                    <div className="deployment-meta-row">
-                                                        <CloudServerOutlined className="deployment-meta-icon" />
-                                                        <Tooltip
-                                                            title={
-                                                                version.deployedImageName
-                                                            }
-                                                        >
-                                                            <span className="deployment-image-name">
-                                                                {version
-                                                                    .deployedImageName
-                                                                    .length > 40
-                                                                    ? version.deployedImageName.substring(
-                                                                          0,
-                                                                          40
-                                                                      ) + '...'
-                                                                    : version.deployedImageName}
-                                                            </span>
-                                                        </Tooltip>
-                                                    </div>
-                                                )}
-
-                                                <div className="deployment-meta-row deployment-timestamp">
-                                                    <ClockCircleOutlined className="deployment-meta-icon" />
-                                                    <span>
-                                                        {moment(
-                                                            version.timeStamp
-                                                        ).format(
-                                                            'MMM DD, YYYY [at] HH:mm'
+                                                                Rollback
+                                                            </Button>
                                                         )}
-                                                    </span>
+                                                    <Button
+                                                        size="small"
+                                                        type="text"
+                                                        icon={
+                                                            <FileTextOutlined />
+                                                        }
+                                                        onClick={() =>
+                                                            this.fetchBuildLogsForVersion(
+                                                                version.version
+                                                            )
+                                                        }
+                                                        className="deployment-action-btn logs"
+                                                    >
+                                                        Build Logs
+                                                    </Button>
                                                 </div>
                                             </div>
-
-                                            <div className="deployment-card-actions">
-                                                {!isCurrent &&
-                                                    version.deployedImageName && (
-                                                        <Button
-                                                            size="small"
-                                                            icon={
-                                                                <RollbackOutlined />
-                                                            }
-                                                            onClick={() =>
-                                                                this.handleRollback(
-                                                                    version.version,
-                                                                    version.deployedImageName ||
-                                                                        ''
-                                                                )
-                                                            }
-                                                            loading={
-                                                                isRollingBack
-                                                            }
-                                                            className="deployment-action-btn rollback"
-                                                        >
-                                                            Rollback
-                                                        </Button>
-                                                    )}
-                                                <Button
-                                                    size="small"
-                                                    type="text"
-                                                    icon={<FileTextOutlined />}
-                                                    onClick={() =>
-                                                        this.setState({
-                                                            expandedDeploymentLogs:
-                                                                isExpanded
-                                                                    ? null
-                                                                    : version.version,
-                                                            activeTab: 'logs',
-                                                        })
-                                                    }
-                                                    className="deployment-action-btn logs"
-                                                >
-                                                    View Logs
-                                                </Button>
-                                            </div>
                                         </div>
-                                    </div>
-                                )
-                            })}
+                                    )
+                                })}
                         </div>
                     ) : (
                         <div className="deployments-empty-state">
@@ -1821,7 +2144,7 @@ export default class ServiceDetailDrawer extends Component<
                             <Button
                                 type="primary"
                                 icon={<ReloadOutlined />}
-                                onClick={() => this.handleRedeploy()}
+                                onClick={() => this.handleDeploy()}
                                 loading={this.state.isRedeploying}
                             >
                                 Deploy Now
@@ -1829,6 +2152,85 @@ export default class ServiceDetailDrawer extends Component<
                         </div>
                     )}
                 </div>
+
+                <Modal
+                    title={
+                        <span>
+                            <FileTextOutlined style={{ marginRight: 8 }} />
+                            Build Logs - Version #
+                            {this.state.buildLogsModalVersion}
+                        </span>
+                    }
+                    open={this.state.showBuildLogsModal}
+                    onCancel={() =>
+                        this.setState({
+                            showBuildLogsModal: false,
+                            buildLogsModalVersion: null,
+                            buildLogsModalContent: '',
+                        })
+                    }
+                    footer={[
+                        <Button
+                            key="copy"
+                            icon={<CopyOutlined />}
+                            onClick={() =>
+                                this.copyToClipboard(
+                                    this.state.buildLogsModalContent
+                                )
+                            }
+                        >
+                            Copy Logs
+                        </Button>,
+                        <Button
+                            key="close"
+                            type="primary"
+                            onClick={() =>
+                                this.setState({
+                                    showBuildLogsModal: false,
+                                    buildLogsModalVersion: null,
+                                    buildLogsModalContent: '',
+                                })
+                            }
+                        >
+                            Close
+                        </Button>,
+                    ]}
+                    width={700}
+                    className="build-logs-modal"
+                >
+                    <div
+                        style={{
+                            background: '#0a0a0a',
+                            borderRadius: 6,
+                            padding: 16,
+                            maxHeight: 500,
+                            overflow: 'auto',
+                            fontFamily:
+                                "'JetBrains Mono', 'Fira Code', monospace",
+                            fontSize: 12,
+                            lineHeight: 1.6,
+                            whiteSpace: 'pre-wrap',
+                            color: '#e5e5e5',
+                            border: '1px solid #2a2a2a',
+                        }}
+                    >
+                        {this.state.isLoadingBuildLogsModal ? (
+                            <div
+                                style={{
+                                    display: 'flex',
+                                    justifyContent: 'center',
+                                    alignItems: 'center',
+                                    padding: '60px 0',
+                                }}
+                            >
+                                <Spin tip="Loading build logs..." />
+                            </div>
+                        ) : (
+                            this.state.buildLogsModalContent ||
+                            'No build logs available.'
+                        )}
+                    </div>
+                </Modal>
             </div>
         )
     }
@@ -1854,6 +2256,16 @@ export default class ServiceDetailDrawer extends Component<
                             Application Logs
                         </h4>
                         <div style={{ display: 'flex', gap: 8 }}>
+                            <Button
+                                size="small"
+                                type="primary"
+                                icon={<ExpandOutlined />}
+                                onClick={() =>
+                                    this.setState({ showLogsModal: true })
+                                }
+                            >
+                                Expand
+                            </Button>
                             <Button
                                 size="small"
                                 onClick={() =>
@@ -2022,7 +2434,7 @@ export default class ServiceDetailDrawer extends Component<
                                                 <Col span={12}>
                                                     <Select
                                                         showSearch
-                                                        placeholder="Select repository"
+                                                        placeholder="Search repositories..."
                                                         value={
                                                             selectedGithubRepo ||
                                                             undefined
@@ -2032,22 +2444,25 @@ export default class ServiceDetailDrawer extends Component<
                                                                 val
                                                             )
                                                         }
-                                                        loading={isLoadingRepos}
+                                                        onSearch={(val) =>
+                                                            this.debouncedSearchRepos(
+                                                                val
+                                                            )
+                                                        }
+                                                        loading={
+                                                            isLoadingRepos ||
+                                                            this.state
+                                                                .isSearchingRepos
+                                                        }
                                                         style={{
                                                             width: '100%',
                                                         }}
-                                                        filterOption={(
-                                                            input,
-                                                            option
-                                                        ) =>
-                                                            (
-                                                                option?.label ??
-                                                                ''
-                                                            )
-                                                                .toLowerCase()
-                                                                .includes(
-                                                                    input.toLowerCase()
-                                                                )
+                                                        filterOption={false}
+                                                        notFoundContent={
+                                                            this.state
+                                                                .isSearchingRepos
+                                                                ? 'Searching...'
+                                                                : 'No repositories found'
                                                         }
                                                         options={githubRepos.map(
                                                             (repo) => ({
@@ -2556,6 +2971,12 @@ export default class ServiceDetailDrawer extends Component<
         } else {
             this.stopLogFetching()
         }
+
+        if (key === 'deployments') {
+            this.startBuildLogFetching()
+        } else {
+            this.stopBuildLogFetching()
+        }
     }
 
     render() {
@@ -2679,6 +3100,13 @@ export default class ServiceDetailDrawer extends Component<
                     onChange={(key) => this.handleTabChange(key)}
                     items={tabItems}
                     className="service-drawer-tabs"
+                />
+
+                <LogsModal
+                    visible={this.state.showLogsModal}
+                    onClose={() => this.setState({ showLogsModal: false })}
+                    appName={service.appName || ''}
+                    apiManager={this.props.apiManager}
                 />
             </Drawer>
         )

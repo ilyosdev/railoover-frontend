@@ -131,7 +131,9 @@ const RealtimeLogs: React.FC<RealtimeLogsProps> = ({
         URL.revokeObjectURL(url)
     }
 
-    const getLogLevel = (line: string): 'info' | 'warning' | 'error' | 'debug' => {
+    const getLogLevel = (
+        line: string
+    ): 'info' | 'warning' | 'error' | 'debug' => {
         const lowerLine = line.toLowerCase()
         if (lowerLine.includes('error') || lowerLine.includes('exception')) {
             return 'error'
@@ -171,7 +173,13 @@ const RealtimeLogs: React.FC<RealtimeLogsProps> = ({
             extra={
                 <div className="logs-actions">
                     <Button
-                        icon={paused ? <PlayCircleOutlined /> : <PauseCircleOutlined />}
+                        icon={
+                            paused ? (
+                                <PlayCircleOutlined />
+                            ) : (
+                                <PauseCircleOutlined />
+                            )
+                        }
                         onClick={handlePause}
                     >
                         {paused ? 'Resume' : 'Pause'}
@@ -179,7 +187,10 @@ const RealtimeLogs: React.FC<RealtimeLogsProps> = ({
                     <Button icon={<ClearOutlined />} onClick={handleClear}>
                         Clear
                     </Button>
-                    <Button icon={<DownloadOutlined />} onClick={handleDownload}>
+                    <Button
+                        icon={<DownloadOutlined />}
+                        onClick={handleDownload}
+                    >
                         Download
                     </Button>
                 </div>
@@ -193,7 +204,9 @@ const RealtimeLogs: React.FC<RealtimeLogsProps> = ({
                         <div className="logs-empty">No logs yet</div>
                     ) : (
                         <>
-                            {logs.map((log, index) => formatLogLine(log.line, index))}
+                            {logs.map((log, index) =>
+                                formatLogLine(log.line, index)
+                            )}
                             <div ref={logsEndRef} />
                         </>
                     )}

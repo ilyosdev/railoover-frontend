@@ -1,14 +1,16 @@
 import {
     DownCircleOutlined,
+    ExpandOutlined,
     FilterOutlined,
     InfoCircleOutlined,
     MenuFoldOutlined,
     UpCircleOutlined,
 } from '@ant-design/icons'
-import { Col, Input, Row, Tooltip } from 'antd'
+import { Button, Col, Input, Row, Tooltip } from 'antd'
 import { localize } from '../../../../utils/Language'
 import Logger from '../../../../utils/Logger'
 import Utils from '../../../../utils/Utils'
+import LogsModal from '../../../projects/LogsModal'
 import ApiComponent from '../../../global/ApiComponent'
 import ClickableLink from '../../../global/ClickableLink'
 import NewTabLink from '../../../global/NewTabLink'
@@ -22,6 +24,7 @@ export default class AppLogsView extends ApiComponent<
         appLogsStringified: string
         isWrapped: boolean
         filter: string
+        showLogsModal: boolean
     }
 > {
     constructor(props: any) {
@@ -31,6 +34,7 @@ export default class AppLogsView extends ApiComponent<
             expandedLogs: true,
             appLogsStringified: '',
             filter: '',
+            showLogsModal: false,
         }
     }
 
@@ -234,7 +238,22 @@ export default class AppLogsView extends ApiComponent<
                                         ? ''
                                         : 'hide-on-demand'
                                 }
+                                style={{
+                                    display: 'flex',
+                                    alignItems: 'center',
+                                    gap: 12,
+                                }}
                             >
+                                <Button
+                                    type="primary"
+                                    size="small"
+                                    icon={<ExpandOutlined />}
+                                    onClick={() =>
+                                        self.setState({ showLogsModal: true })
+                                    }
+                                >
+                                    Expand
+                                </Button>
                                 <ClickableLink
                                     onLinkClicked={() => {
                                         self.setState({
@@ -303,6 +322,13 @@ export default class AppLogsView extends ApiComponent<
                         />
                     </div>
                 </div>
+
+                <LogsModal
+                    visible={self.state.showLogsModal}
+                    onClose={() => self.setState({ showLogsModal: false })}
+                    appName={self.props.appName}
+                    apiManager={self.apiManager}
+                />
             </div>
         )
     }
