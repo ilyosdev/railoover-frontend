@@ -12,21 +12,12 @@ import Sidebar from './Sidebar'
 import Apps from './apps/Apps'
 import ProjectDetailsEdit from './apps/ProjectDetailsEdit'
 import AppDetails from './apps/appDetails/AppDetails'
-import DockerComposeEntry from './apps/compose/DockerComposeEntry'
-import OneClickAppSelector, {
-    TEMPLATE_ONE_CLICK_APP,
-} from './apps/oneclick/selector/OneClickAppSelector'
-import TemplateInputPage from './apps/oneclick/template/TemplateInputPage'
-import OneClickAppConfigPage from './apps/oneclick/variables/OneClickAppConfigPage'
-import OneClickDeploymentPage from './apps/oneclick/variables/OneClickDeploymentPage'
 import ApiComponent from './global/ApiComponent'
-import Maintenance from './maintenance/Maintenance'
 import Monitoring from './monitoring/Monitoring'
 import Cluster from './nodes/Cluster'
 import Settings from './settings/Settings'
 import ProjectDashboard from './projects/ProjectDashboard'
 import Projects from './projects/Projects'
-import TeamManagement from './team/TeamManagement'
 import ContainerStats from './stats/ContainerStats'
 import '../styles/header-tabs.css'
 
@@ -199,41 +190,13 @@ class PageRoot extends ApiComponent<
                                         />
                                     )}
                                 />
-                                <Route
-                                    path={`/apps/oneclick/input/${TEMPLATE_ONE_CLICK_APP}`}
-                                    component={TemplateInputPage}
-                                />
-                                <Route
-                                    path="/apps/oneclick/deployment"
-                                    component={OneClickDeploymentPage}
-                                />
-                                <Route
-                                    path="/apps/oneclick/:appName"
-                                    component={OneClickAppConfigPage}
-                                />
-                                <Route
-                                    path="/apps/oneclick"
-                                    component={OneClickAppSelector}
-                                />
-                                <Route
-                                    path="/apps/dockercompose"
-                                    component={DockerComposeEntry}
-                                />
                                 <Route path="/apps/" component={Apps} />
                                 <Route
                                     path="/monitoring/"
                                     component={Monitoring}
                                 />
                                 <Route path="/cluster/" component={Cluster} />
-                                <Route
-                                    path="/maintenance/"
-                                    component={Maintenance}
-                                />
                                 <Route path="/settings/" component={Settings} />
-                                <Route
-                                    path="/team/"
-                                    component={TeamManagement}
-                                />
                                 <Route
                                     path="/stats/"
                                     component={ContainerStats}

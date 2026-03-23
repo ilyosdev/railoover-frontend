@@ -2,15 +2,11 @@ import {
     BarChartOutlined,
     ClusterOutlined,
     CodeOutlined,
-    ControlOutlined,
-    DashboardOutlined,
     LaptopOutlined,
     LogoutOutlined,
     MenuFoldOutlined,
     MenuUnfoldOutlined,
-    ProjectOutlined,
     SettingOutlined,
-    TeamOutlined,
 } from '@ant-design/icons'
 import { Button, Layout, Menu, MenuProps } from 'antd'
 import React, { useContext } from 'react'
@@ -50,19 +46,14 @@ const Sidebar: React.FC<SidebarProps> = ({
             icon: <LaptopOutlined />,
         },
         {
-            key: 'projects',
-            label: localize('menu_item.projects', 'Projects'),
-            icon: <ProjectOutlined />,
-        },
-        {
             key: 'apps',
-            label: localize('menu_item.app', 'Apps'),
+            label: localize('menu_item.app', 'Containers'),
             icon: <CodeOutlined />,
         },
         {
             key: 'monitoring',
             label: localize('menu_item.monitoring', 'Monitoring'),
-            icon: <DashboardOutlined />,
+            icon: <BarChartOutlined />,
         },
         {
             key: 'cluster',
@@ -70,19 +61,9 @@ const Sidebar: React.FC<SidebarProps> = ({
             icon: <ClusterOutlined />,
         },
         {
-            key: 'maintenance',
-            label: localize('menu_item.maintenance', 'Maintenance'),
-            icon: <ControlOutlined />,
-        },
-        {
             key: 'settings',
             label: localize('menu_item.settings', 'Settings'),
             icon: <SettingOutlined />,
-        },
-        {
-            key: 'team',
-            label: localize('menu_item.team', 'Team'),
-            icon: <TeamOutlined />,
         },
         { type: 'divider' },
         {
@@ -132,11 +113,11 @@ const Sidebar: React.FC<SidebarProps> = ({
                     )}
                     <img
                         src="/icon-512x512.png"
-                        alt="Railover"
+                        alt="AppX Deploy"
                         className="sidebar-logo-image"
                     />
                     {!collapsed && (
-                        <span className="sidebar-logo-text">Railover</span>
+                        <span className="sidebar-logo-text">AppX Deploy</span>
                     )}
                 </div>
                 <Menu

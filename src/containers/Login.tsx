@@ -68,7 +68,7 @@ export default class Login extends ApiComponent<RouteComponentProps<any>, any> {
                         <Card
                             title={localize(
                                 'login_form.cap_rover',
-                                'Railover Login'
+                                'AppX Deploy'
                             )}
                             style={{ width: 450 }}
                             extra={

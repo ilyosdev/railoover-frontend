@@ -1,6 +1,5 @@
 import { Button, Card, Col, Input, Modal, Row, Tooltip } from 'antd'
 import { Redirect, RouteComponentProps } from 'react-router'
-import { Fragment } from 'react/jsx-runtime'
 import AppConstants from '../utils/AppConstants'
 import { localize } from '../utils/Language'
 import Toaster from '../utils/Toaster'
@@ -8,7 +7,6 @@ import Utils from '../utils/Utils'
 import ApiComponent from './global/ApiComponent'
 import CenteredSpinner from './global/CenteredSpinner'
 import ErrorRetry from './global/ErrorRetry'
-import NewTabLink from './global/NewTabLink'
 import '../styles/dashboard-sidebar.css'
 const Search = Input.Search
 
@@ -131,11 +129,6 @@ export default class Dashboard extends ApiComponent<
         const self = this
         const IGNORE = 'IGNORE'
 
-        const translated = localize(
-            'dashboard.enable_ssl_dialog_body',
-            'IMPORTANT: Once you enable HTTPS, you cannot edit the root domain ever again. Make sure you use a good root domain. A good practice is to go one level deeper and setup your root domain. For example, if you own %s1, use %s2 as your root domain. This will allow you to better manage your subdomains, do not use %s3 as your root domain.'
-        )
-
         Promise.resolve()
             .then(function () {
                 return new Promise(function (resolve, reject) {
@@ -149,24 +142,11 @@ export default class Dashboard extends ApiComponent<
                                 <p>
                                     {localize(
                                         'dashboard.enable_https_info',
-                                        "Railover uses Let's Encrypt to provide free SSL Certificates (HTTPS)."
+                                        "AppX Deploy uses Let's Encrypt to provide free SSL Certificates (HTTPS)."
                                     )}
                                     {localize(
                                         'dashboard.enable_https_email_importance',
                                         "This email address is very important as Let's Encrypt uses it for validation purposes. Please provide a valid email here."
-                                    )}
-                                </p>
-                                <p>
-                                    {Utils.formatText(
-                                        translated,
-                                        ['%s1', '%s2', '%s3'],
-                                        [
-                                            <code>example.com</code>,
-                                            <code>
-                                                *.caprover-root.example.com
-                                            </code>,
-                                            <code>*.example.com</code>,
-                                        ]
                                     )}
                                 </p>
                                 <Input
@@ -326,8 +306,6 @@ export default class Dashboard extends ApiComponent<
 
         return (
             <div className="dashboard-container">
-                {self.createInitialSetupIfNoRootSsl()}
-                <br />
                 {self.createPostFullSetupIfHasForceSsl()}
                 <br />
                 {self.createSetupPanelIfNoForceSsl()}
@@ -338,32 +316,8 @@ export default class Dashboard extends ApiComponent<
     createSetupPanelIfNoForceSsl() {
         const self = this
         if (this.state.apiData.forceSsl && !self.state.isForceChangingDomain) {
-            // User has set up the machine, no need to update your domain again - unless user really wants this!
             return undefined
         }
-
-        const replacements = [
-            <span>
-                <i> myawesomecompany.com </i>
-            </span>,
-            <i> captain.myawesomecompany.com </i>,
-            <i> foo.bar.myawesomecompany.com </i>,
-            <Fragment>
-                <br />
-                <b> Type:</b> <u>A</u>, <b>Name (or host):</b>{' '}
-                <u> *.caprover-root</u>, <b> IP (or Points to):</b>{' '}
-                <u> 110.120.130.140 </u>
-                <br />
-            </Fragment>,
-        ]
-        const translatedBody = Utils.formatText(
-            localize(
-                'dashboard.detailed_guide_setup_ip',
-                'The very first thing that Railover needs is a root domain. For example, if you own %s1, you can use %s2 or %s3 as your root domain. First, you need to make sure that the ip address for all subdomains of the root domain resolve to the Railover ip address. To do this, go to the DNS settings in your domain provider website, and set a wild card A entry. For example: %s4 where this IP is the IP address of your Railover machine (server).'
-            ),
-            ['%s1', '%s2', '%s3', '%s4'],
-            replacements
-        )
 
         const translatedHint = Utils.formatText(
             localize(
@@ -383,25 +337,15 @@ export default class Dashboard extends ApiComponent<
                     <Card
                         title={localize(
                             'dashboard.root_domain_configurations',
-                            'Railover Root Domain Configurations'
+                            'AppX Deploy Domain Configuration'
                         )}
                     >
                         <div>
-                            <p>{translatedBody}</p>
                             <p>
-                                <i>
-                                    {localize(
-                                        'dashboard.dns_settings_effect_time',
-                                        'NOTE: DNS settings might take several hours to take into effect.'
-                                    )}
-                                    <NewTabLink url="https://ca.godaddy.com/help/what-factors-affect-dns-propagation-time-1746">
-                                        {' '}
-                                        {localize(
-                                            'dashboard.dns_settings_effect_time_link',
-                                            'See this link for more details'
-                                        )}
-                                    </NewTabLink>{' '}
-                                </i>
+                                {localize(
+                                    'dashboard.domain_setup_info',
+                                    'Set your root domain below. Make sure a wildcard DNS A record (e.g. *.myappx.live) points to this server\'s IP address.'
+                                )}
                             </p>
                         </div>
                         <hr />
@@ -476,138 +420,32 @@ export default class Dashboard extends ApiComponent<
         )
     }
 
-    createInitialSetupIfNoRootSsl() {
-        if (this.state.apiData.hasRootSsl) {
-            // User has set up the machine, no need to show the welcome message
-            return <div />
-        }
-
-        return (
-            <Row justify="center">
-                <Col xs={{ span: 23 }} lg={{ span: 16 }}>
-                    <Card
-                        title={localize(
-                            'dashboard.setup_panel_title',
-                            'Railover Initial Setup'
-                        )}
-                    >
-                        <div>
-                            <h3>
-                                {localize(
-                                    'dashboard.congratulations',
-                                    'Congratulations!'
-                                )}{' '}
-                                <span aria-label="Congrats" role="img">
-                                    🎉🎉
-                                </span>
-                            </h3>
-                            <p>
-                                <b />{' '}
-                                {localize(
-                                    'dashboard.successful_installation',
-                                    'You have installed Railover successfully!'
-                                )}{' '}
-                                <b>
-                                    {localize(
-                                        'dashboard.https_setup_needed',
-                                        'But you still need to assign a domain and finish the HTTPS setup to fully set up Railover!'
-                                    )}
-                                </b>
-                                {localize(
-                                    'dashboard.setup_options',
-                                    'You can set up your Railover instance in two ways:'
-                                )}
-                            </p>
-
-                            <ul>
-                                <li>
-                                    <b>
-                                        {localize(
-                                            'dashboard.command_line_tool',
-                                            'Command Line Tool (RECOMMENDED):'
-                                        )}{' '}
-                                    </b>{' '}
-                                    {localize(
-                                        'dashboard.run_on_local_machine',
-                                        'On your local machine, simply run the following commands'
-                                    )}
-                                    <br />
-                                    <code>npm i -g railover</code>
-                                    <br />
-                                    <code>
-                                        {localize(
-                                            'dashboard.railover_serversetup',
-                                            'railover serversetup'
-                                        )}
-                                    </code>
-                                    .{' '}
-                                </li>
-                                <li>
-                                    <b>
-                                        {localize(
-                                            'dashboard.use_panel_below',
-                                            'Use the panel below:'
-                                        )}{' '}
-                                    </b>{' '}
-                                    {localize(
-                                        'dashboard.non_guided_version',
-                                        "This is a non-guided version of the Command Line method. Don't forget to set the root domain, then enable HTTPS and force it, and finally change the password."
-                                    )}
-                                </li>
-                            </ul>
-                        </div>
-                    </Card>
-                </Col>
-            </Row>
-        )
-    }
-
     createPostFullSetupIfHasForceSsl() {
         const self = this
         if (!this.state.apiData.forceSsl) {
-            // User has not fully set up the machine, do not show the post installation message
             return undefined
         }
 
         return (
             <Row justify="center">
                 <Col xs={{ span: 23 }} lg={{ span: 16 }}>
-                    <Card title="Railover">
+                    <Card title="AppX Deploy Dashboard">
                         <div>
-                            <h3>
-                                {localize(
-                                    'dashboard.congratulations',
-                                    'Congratulations!'
-                                )}{' '}
-                                <span aria-label="Congrats" role="img">
-                                    🎉🎉
-                                </span>
-                            </h3>
                             <p>
                                 {localize(
-                                    'dashboard.caprover_setup_success',
-                                    'You have set up Railover successfully! You can now deploy your apps! Remember, with Railover, you can deploy applications from source code (such as Node.js, PHP, Java, Ruby, Python etc), and you can also deploy ready to go applications such as MySQL, MongoDB, WordPress, Redis, and many more!'
+                                    'dashboard.appx_deploy_ready',
+                                    'AppX Deploy is running and ready to serve containers. Use the Containers tab to manage apps, or check Monitoring for resource usage.'
                                 )}
                             </p>
-
                             <p>
-                                {localize(
-                                    'dashboard.deploy_source_code_info',
-                                    'For more information on how to deploy applications from source code, make sure to have a look at this: '
-                                )}
-                                <a
-                                    href="https://caprover.com/docs/sample-apps.html"
-                                    target="_blank"
-                                    rel="noopener noreferrer"
-                                >
-                                    {' '}
+                                <b>
                                     {localize(
-                                        'dashboard.sample_apps',
-                                        'sample apps.'
+                                        'dashboard.root_domain_label',
+                                        'Root Domain:'
                                     )}
-                                </a>
+                                </b>{' '}
+                                <code>{self.state.apiData.rootDomain}</code>
                             </p>
-
                             <p>
                                 <i>
                                     {localize(
@@ -616,7 +454,6 @@ export default class Dashboard extends ApiComponent<
                                     )}
                                 </i>
                             </p>
-
                             <Row justify="end">
                                 <Button
                                     disabled={this.state.isForceChangingDomain}
@@ -629,7 +466,7 @@ export default class Dashboard extends ApiComponent<
                                 >
                                     {localize(
                                         'dashboard.change_root_domain_anyways',
-                                        'Change Root Domain Anyways'
+                                        'Change Root Domain'
                                     )}
                                 </Button>
                             </Row>
